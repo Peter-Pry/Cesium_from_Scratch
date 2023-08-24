@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.103/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.103/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="cesiumContainer"></div>
+    <div id="sidebar">
+        <input id="addressInput" type="text" placeholder="Entrez une adresse">
+        <button id="searchButton">Rechercher</button>
+        <h3>Imageries</h3>
+        <ul id="imageryLayers-list">
+            <!-- Les éléments de la liste seront ajoutés dynamiquement avec JavaScript -->
+        </ul>
+        <h3>Primitives</h3>
+        <ul id="primitives-list">
+            <!-- Les éléments de la liste seront ajoutés dynamiquement avec JavaScript -->
+        </ul>
+        <h3>Données</h3>
+        <ul id="layer-list">
+            <!-- Les éléments de la liste seront ajoutés dynamiquement avec JavaScript -->
+        </ul>
+    </div>
+    <script>
+        const config = {
+            urlGeoserver: "http://localhost:8585/geoserver",
+            urlBillboardImageServer: "http://localhost:8585/geoserver/www/images/antibes",
+            geoJsonDataSources: {}
+        };
+
+        const layers = [
+            {
+                name: "COLLEGES",
+                labelText: "Collèges",
+                icon: config.urlBillboardImageServer + "/COLLEGES.png"
+            },
+            {
+                name: "AIRES_DE_JEUX",
+                labelText: "Aires de jeux",
+                icon: config.urlBillboardImageServer + "/AIRES_DE_JEUX.png"
+            },
+            {
+                name: "EQUIPEMENTS_CULTURELS_STREET_ART",
+                labelText: "Street Art",
+                icon: config.urlBillboardImageServer + "/Art Urbain.png"
+            }, {
+                name: "ARTISTES_ARTISANS_ART",
+                labelText: "Artistes & artisans d'art",
+                icon: config.urlBillboardImageServer + "/ARTISTES_ARTISANS_ART.png"
+            }
+            // ... autres couches
+        ];
+
+        // Source terrain (Définit à l'initialisation du viewer)
+        const terrainProvider = new Cesium.CesiumTerrainProvider({
+            url: "https://cesium-dev.ville-antibes.fr/tilesets/quantized/"
+        });
+
+        // Source Free Cesium imagery NaturalEarthII (Définit à l'initialisation du viewer)
+        const imageryProvider = new Cesium.TileMapServiceImageryProvider({
+            url: Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')
+        });
+
+        // Source Bati3D IGO - 3Dtiles - Servit par IGO
+        const bati3D_IGO_tileset = new Cesium.Cesium3DTileset({
+            url: 'https://igoprod.igo.fr/SG/antibes/b3dm/Antibes_BatiGlobal.410970/tileset.json'
+        });
+
+        // Source Bati3D IGO - 3Dtiles - Servit par IGO
+        const mesh3D_IGO_tileset = new Cesium.Cesium3DTileset({
+            url: 'https://igoprod.igo.fr/SG/antibes/b3dm/AntibesMesh3D/tileset.json'
+        });
+
+        // Source Globe OpenStreetMap (OSM) servit par les serveurs d'OSM
+        const globeOSM = new Cesium.OpenStreetMapImageryProvider({
+            url: 'https://a.tile.openstreetmap.org/',
+
+        });
+
+        // Vue aérienne Antibes 2017 (Geoserver)
+        const antibes2017Provider = new Cesium.WebMapServiceImageryProvider({
+            url: 'https://sig-test.ville-antibes.fr/geoserver/cesium/wms',
+            layers: 'Antibes_OrthoVraie_LB93_2017_withmask',
+            enablePickFeatures: false,
+            parameters: {
+                format: "image/png",
+                transparent: "true",
+            },
+        });
+
+        // Source Vue aérienne Antibes 2017 servit par IGO
+        const globeIGOProvider = new Cesium.WebMapServiceImageryProvider({
+            url: 'https://igoprod.igo.fr/SG/Antibes/Imagery',
+            layers: 'Antibes_Globe.mpt',
+            enablePickFeatures: false
+        });
+
+
+        // Viewer Cesium
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+            terrainProvider: terrainProvider,
+            imageryProvider: imageryProvider,
+            baseLayerPicker: false,
+            geocoder: false,
+            animation: false,
+            timeline: false,
+            useBrowserRecommendedResolution: true
+        });
+
+        // Positionnement caméra
+        viewer.camera.setView({
+            destination: new Cesium.Cartesian3(4605135.76386452, 574914.9092524701, 4373867.371009422),
+            orientation: {
+                heading: 6.283185307179586,
+                pitch: -0.7870703161505075,
+                roll: 6.283185307179586,
+            }
+        });
+
+        function addGeoJsonDataSource(viewer, config, layerGeoJsonData, options = {}) {
+            const defaultOptions = {
+                urlGeoJsonDataSource: config.urlGeoserver + "/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=" + layerGeoJsonData + "&outputFormat=application/json",
+                markerSymbol: 'marker',
+                verticalAmount: 100,
+                distanceDisplayCondition: new Cesium.DistanceDisplayCondition(1.0, 40000.0),
+                distanceDisplayConditionLabel: new Cesium.DistanceDisplayCondition(1.0, 40000.0),
+                markerSize: 50,
+                polylineWidth: 1,
+                billboardWidth: 45,
+                billboardHeight: 45,
+                labelFont: '14pt sans-serif',
+                labelPixelOffset: new Cesium.Cartesian2(0, -65),
+            };
+
+            const {
+                markerSymbol,
+                verticalAmount,
+                urlBillboardImage,
+                categorieLabelText,
+                distanceDisplayCondition,
+                distanceDisplayConditionLabel,
+                markerSize,
+                polylineWidth,
+                billboardWidth,
+                billboardHeight,
+                labelFont,
+                labelPixelOffset,
+                urlGeoJsonDataSource } = { ...defaultOptions, ...options };
+
+            const promise = Cesium.GeoJsonDataSource.load(urlGeoJsonDataSource, {
+                markerSize: markerSize,
+                markerSymbol: markerSymbol,
+            });
+
+            return promise
+                .then(function (dataSource) {
+
+                    // Get the array of entities
+                    const entities = dataSource.entities.values;
+
+                    for (let i = 0; i < entities.length; i++) {
+                        const entity = entities[i];
+                        const position = entity.position.getValue(Cesium.JulianDate.now());
+
+                        // Add a vertical offset
+                        const origMagnitude = Cesium.Cartesian3.magnitude(position);
+                        const newMagnitude = origMagnitude + verticalAmount;
+                        const scalar = newMagnitude / origMagnitude;
+                        const newPosition = new Cesium.Cartesian3();
+                        Cesium.Cartesian3.multiplyByScalar(position, scalar, newPosition);
+                        entity.position = newPosition;
+
+                        // Add a vertical line
+                        entity.polyline = new Cesium.PolylineGraphics({
+                            positions: [position, newPosition],
+                            width: polylineWidth,
+                            material: Cesium.Color.WHITE
+                        });
+
+                        // Display the entity icon
+                        if (urlBillboardImage) {
+                            entity.billboard.image = urlBillboardImage;
+                        }
+
+                        entity.billboard.width = billboardWidth;
+                        entity.billboard.height = billboardHeight;
+                        entity.billboard.disableDepthTestDistance = Number.POSITIVE_INFINITY;
+                        entity.billboard.distanceDisplayCondition = distanceDisplayCondition;
+
+                        // Set a scale based on the distance to the camera
+                        entity.billboard.scaleByDistance = new Cesium.NearFarScalar(1, 1, 40000.0, 0.5);
+
+                        const entityName = getEntityName(entity);
+
+                        entity.label = new Cesium.LabelGraphics({
+                            text: entityName,
+                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                            horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                            pixelOffset: labelPixelOffset,
+                            font: labelFont,
+                            fillColor: Cesium.Color.WHITE,
+                            outlineColor: Cesium.Color.BLACK,
+                            outlineWidth: 4,
+                            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                            distanceDisplayCondition: distanceDisplayConditionLabel,
+                            show: false
+                        });
+                    }
+                    return dataSource;
+                })
+                .catch(function (error) {
+                    // Display errors encountered during loading.
+                    console.log(error);
+                });
+        }
+
+        function getEntityName(entity) {
+            // Liste des propriétés possibles pour le nom de l'entité
+            const possibleNameProperties = ['nom', 'NOM', 'name', 'NAME', 'title', 'TITLE', 'label', 'LABEL'];
+
+            // Parcourir la liste des propriétés possibles
+            for (let i = 0; i < possibleNameProperties.length; i++) {
+                const propName = possibleNameProperties[i];
+
+                // Vérifier si la propriété existe
+                if (entity.properties.hasOwnProperty(propName)) {
+                    return entity.properties[propName];
+                }
+            }
+
+            // Retourner une valeur par défaut si aucune propriété de nom n'a été trouvée
+            return 'Unknown';
+        }
+
+
+        //##--Affiche le nom de l'entité au sruvol de la souris --#
+        function setupEntityHoverHandlers(viewer) {
+            let hoveredEntity = null;
+
+            // Afficher le label de l'entité lorsque la souris passe sur l'entité
+            viewer.screenSpaceEventHandler.setInputAction(function (movement) {
+                const pickedObject = viewer.scene.pick(movement.endPosition);
+                if (Cesium.defined(pickedObject) && Cesium.defined(pickedObject.id)) {
+                    if (hoveredEntity !== pickedObject.id) {
+                        if (hoveredEntity !== null) {
+                            hoveredEntity.label.show = false;
+                        }
+                        hoveredEntity = pickedObject.id;
+                        hoveredEntity.label.show = true;
+                    }
+                } else {
+                    if (hoveredEntity !== null) {
+                        hoveredEntity.label.show = false;
+                        hoveredEntity = null;
+                    }
+                }
+            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+            // Cacher le label de l'entité lorsque la souris quitte l'entité
+            viewer.screenSpaceEventHandler.setInputAction(function (movement) {
+                if (hoveredEntity !== null) {
+                    hoveredEntity.label.show = false;
+                    hoveredEntity = null;
+                }
+            }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+        }
+
+        // Utilisation :
+        setupEntityHoverHandlers(viewer);
+        //##---------#
+
+
+        // Fonction d'ajout ou de suppression des couches de données
+        initializeGeoJsonLayers(viewer, layers, config, 'layer-list').then(results => {
+            console.log("Toutes les couches GeoJson ont été initialisées !");
+        });
+
+        function initializeGeoJsonLayers(viewer, layers, config, parentId) {
+            // Créez un tableau pour stocker toutes les promesses
+            const allGeoJsonsourcesPromises = layers.map(layer => {
+                return addGeoJsonDataSource(viewer, config, `Antibes:${layer.name}`, {
+                    urlBillboardImage: layer.icon,
+                    categorieLabelText: layer.labelText
+                }).then(dataSource => {
+                    return {
+                        labelText: layer.labelText,
+                        dataSource: dataSource
+                    };
+                });
+            });
+
+            // Attendez que toutes les promesses soient résolues
+            return Promise.all(allGeoJsonsourcesPromises).then(results => {
+                // Triez les résultats par ordre alphabétique en fonction de labelText
+                results.sort((a, b) => a.labelText.localeCompare(b.labelText));
+
+                // Créez la liste
+                results.forEach(result => {
+                    const listItem = document.createElement('li');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+
+                    // Cochez la case à cocher par défaut et ajoutez la source de données au viewer
+                    checkbox.checked = true;
+                    viewer.dataSources.add(result.dataSource);
+
+                    checkbox.addEventListener('change', function () {
+                        // Afficher ou masquer la couche en fonction de l'état de la case à cocher
+                        if (checkbox.checked) {
+                            viewer.dataSources.add(result.dataSource);
+                        } else {
+                            viewer.dataSources.remove(result.dataSource);
+                        }
+                    });
+
+                    listItem.appendChild(checkbox);
+                    listItem.appendChild(document.createTextNode(result.labelText));
+                    document.getElementById(parentId).appendChild(listItem);
+                });
+
+                return results; // Retournez les résultats pour une utilisation ultérieure si nécessaire
+            });
+        }
+
+
+
+
+        // Ajout des contrôles pour les imageryLayers
+        const imageryLayersControls = [
+            { name: "globeOSM", provider: globeOSM, labelText: "Globe OpenStreetMap", activeBydefault: true },
+            { name: "igo2017Provider", provider: globeIGOProvider, labelText: "Vue aérienne Antibes 2017 (IGO)" },
+            { name: "antibes2017Provider", provider: antibes2017Provider, labelText: "Vue aérienne Antibes 2017 (SIG Antibes)", activeBydefault: true }
+        ];
+
+        const imageryLayers = initializeImageryLayerControls(viewer, imageryLayersControls, 'imageryLayers-list');
+
+        function initializeImageryLayerControls(viewer, imageryLayersControls, parentId) {
+            const addedLayers = {}; // Objet pour stocker les références aux couches ajoutées
+
+            imageryLayersControls.forEach(control => {
+                const listItem = document.createElement('li');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                const layer = new Cesium.ImageryLayer(control.provider);
+                if (control.activeBydefault) {
+                    checkbox.checked = true; // Par défaut, la couche est affichée
+                    viewer.imageryLayers.add(layer);
+                }
+                addedLayers[control.name] = layer; // Stockez la référence à la couche ajoutée
+
+                checkbox.addEventListener('change', function () {
+                    if (checkbox.checked) {
+                        if (!addedLayers[control.name]) {
+                            const newLayer = new Cesium.ImageryLayer(control.provider);
+                            viewer.imageryLayers.add(newLayer);
+                            addedLayers[control.name] = newLayer;
+                        } else {
+                            viewer.imageryLayers.add(addedLayers[control.name]);
+                        }
+                    } else {
+                        viewer.imageryLayers.remove(addedLayers[control.name]);
+                        delete addedLayers[control.name]; // Supprimez la référence pour libérer de la mémoire
+                    }
+                });
+
+                listItem.appendChild(checkbox);
+                listItem.appendChild(document.createTextNode(control.labelText));
+                document.getElementById(parentId).appendChild(listItem);
+            });
+
+            return addedLayers;
+        }
+
+        // Ajout des contrôles pour les primitives
+        const primitivesControls = [
+            { name: "bati3D_IGO_tileset", url: 'https://igoprod.igo.fr/SG/antibes/b3dm/Antibes_BatiGlobal.410970/tileset.json', labelText: "Bati3D IGO" },
+            { name: "mesh3D_IGO_tileset", url: 'https://igoprod.igo.fr/SG/antibes/b3dm/AntibesMesh3D/tileset.json', labelText: "Mesh3D IGO" },
+            { name: "mesh3D_SIG_tileset", url: 'https://cesium-dev.ville-antibes.fr/data2/3dtiles/mesh/pyramid/tileset.json', labelText: "Mesh3D SIG Antibes" }
+        ];
+
+        const primitivesLayers = createPrimitivesControl(viewer, primitivesControls, 'primitives-list');
+
+        function createPrimitivesControl(viewer, primitivesControls, parentId) {
+            const addPrimitivesLayers = {};
+
+            primitivesControls.forEach(control => {
+                const { name, provider, labelText, url } = control;
+                const listItem = document.createElement('li');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+
+                checkbox.addEventListener('change', function () {
+                    if (checkbox.checked) {
+                        if (!addPrimitivesLayers[name]) {
+                            const newlayer = new Cesium.Cesium3DTileset({ url: url });
+                            newlayer.readyPromise.then(function (tileset) {
+                                viewer.scene.primitives.add(tileset);
+                                addPrimitivesLayers[name] = tileset;
+                            }).catch(function (error) {
+                                console.error("Erreur lors du chargement du jeu de tuiles 3D :", error);
+                            });
+                        } else {
+                            viewer.scene.primitives.add(addPrimitivesLayers[name]);
+                        }
+                    } else {
+                        viewer.scene.primitives.remove(addPrimitivesLayers[name]);
+                        delete addPrimitivesLayers[name];
+                    }
+                });
+
+                listItem.appendChild(checkbox);
+                listItem.appendChild(document.createTextNode(labelText));
+                document.getElementById(parentId).appendChild(listItem);
+            });
+
+            return addPrimitivesLayers;
+        }
+
+        //## Fonction de recherche d'addresse 
+
+        const search = createSearchModule(viewer, 'addressInput', 'searchButton');
+
+        function createSearchModule(viewer, addressInputId, searchButtonId) {
+            const addressInput = document.getElementById(addressInputId);
+            const searchButton = document.getElementById(searchButtonId);
+            const resultsContainer = document.createElement('div');
+            resultsContainer.classList.add('results-container');
+            addressInput.parentNode.insertBefore(resultsContainer, addressInput.nextSibling);
+            let currentEntity = null;
+
+            // Fonction pure pour récupérer les résultats de recherche
+            async function getSearchResults(query) {
+                const response = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${query}&limit=5`);
+                return response.json();
+            }
+
+            // Fonction pure pour mettre à jour le conteneur de résultats
+            function updateResultsContainer(data, resultsContainer, addressInput, viewer) {
+                resultsContainer.innerHTML = '';
+
+                data.features.forEach(feature => {
+                    const resultItem = document.createElement('div');
+                    resultItem.classList.add('result-item');
+                    resultItem.textContent = feature.properties.label;
+
+                    // Lorsque vous cliquez sur un élément de résultat
+                    resultItem.addEventListener('click', () => {
+                        addressInput.value = feature.properties.label;
+                        resultsContainer.innerHTML = ''; // Videz les résultats après la sélection
+
+                        // Récupérez les coordonnées de l'élément sur lequel vous avez cliqué
+                        const coordinates = feature.geometry.coordinates;
+
+                        // Déclenchez le déplacement (flyto) vers ces coordonnées
+                        currentEntity = updateViewerWithCoordinates(viewer, coordinates, currentEntity);
+                    });
+
+                    resultsContainer.appendChild(resultItem);
+                });
+            }
+
+            // Utilisez les fonctions dans vos gestionnaires d'événements
+            addressInput.addEventListener('input', async () => {
+                const query = addressInput.value;
+
+                if (query.length > 2) {
+                    const data = await getSearchResults(query);
+                    updateResultsContainer(data, resultsContainer, addressInput, viewer);
+                } else {
+                    resultsContainer.innerHTML = '';
+                }
+            });
+
+            // Fonction pure pour récupérer les coordonnées d'une adresse
+            async function getCoordinatesFromAddress(address) {
+                const response = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${address}`);
+                const data = await response.json();
+
+                if (data.features.length > 0) {
+                    return data.features[0].geometry.coordinates;
+                }
+                return null;
+            }
+
+            // Fonction pure pour mettre à jour le viewer avec les coordonnées
+            function updateViewerWithCoordinates(viewer, coordinates, currentEntity) {
+                // Supprimez l'entité précédente si elle existe
+                if (currentEntity) {
+                    viewer.entities.remove(currentEntity);
+                }
+
+                // Utilisez viewer.camera.flyTo pour déplacer la caméra
+                viewer.camera.flyTo({
+                    destination: Cesium.Cartesian3.fromDegrees(coordinates[0], coordinates[1], 1000),
+                    orientation: {
+                        heading: Cesium.Math.toRadians(0),
+                        pitch: Cesium.Math.toRadians(-90),
+                        roll: 0.0
+                    }
+                });
+
+                // Ajoutez une nouvelle entité et retournez-la
+                return viewer.entities.add({
+                    position: Cesium.Cartesian3.fromDegrees(coordinates[0], coordinates[1]),
+                    point: {
+                        pixelSize: 10,
+                        color: Cesium.Color.RED,
+                    },
+                });
+            }
+
+            // Lorsque le bouton de recherche est cliqué
+            searchButton.addEventListener('click', async () => {
+                const address = addressInput.value;
+                const data = await getSearchResults(address);
+
+                if (data.features.length > 0) {
+                    const coordinates = data.features[0].geometry.coordinates;
+                    currentEntity = updateViewerWithCoordinates(viewer, coordinates, currentEntity);
+                } else {
+                    console.log('Aucun résultat de géocodage trouvé.');
+                }
+            });
+
+            return {
+                getSearchResults,
+                updateResultsContainer,
+                getCoordinatesFromAddress,
+                updateViewerWithCoordinates
+            };
+        }
+    </script>
+</body>
+
+</html>
