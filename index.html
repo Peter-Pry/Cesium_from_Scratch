@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="utf-8">
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.103/Build/Cesium/Cesium.js"></script>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.103/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -64,13 +64,31 @@
         ];
 
         // Source terrain (Définit à l'initialisation du viewer)
-        const terrainProvider = new Cesium.CesiumTerrainProvider({
-            url: "https://cesium-dev.ville-antibes.fr/tilesets/quantized/"
+        const terrainProvider = new Cesium.Terrain(Cesium.CesiumTerrainProvider.fromUrl("https://cesium-dev.ville-antibes.fr/tilesets/quantized/"));
+
+        // Viewer Cesium
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+            terrain: terrainProvider,
+            baseLayer: Cesium.ImageryLayer.fromProviderAsync(
+                Cesium.TileMapServiceImageryProvider.fromUrl(
+                    Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII")
+                )
+            ),
+            baseLayerPicker: false,
+            geocoder: false,
+            animation: false,
+            timeline: false,
+            useBrowserRecommendedResolution: true
         });
 
-        // Source Free Cesium imagery NaturalEarthII (Définit à l'initialisation du viewer)
-        const imageryProvider = new Cesium.TileMapServiceImageryProvider({
-            url: Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')
+        // Positionnement caméra
+        viewer.camera.setView({
+            destination: new Cesium.Cartesian3(4605135.76386452, 574914.9092524701, 4373867.371009422),
+            orientation: {
+                heading: 6.283185307179586,
+                pitch: -0.7870703161505075,
+                roll: 6.283185307179586,
+            }
         });
 
         // Source Bati3D IGO - 3Dtiles - Servit par IGO
@@ -108,8 +126,8 @@
         });
 
         const orthoIgnProvider = new Cesium.WebMapServiceImageryProvider({
-            url : 'https://wxs.ign.fr/inspire/inspire/r/wms',
-            layers : 'OI.OrthoimageCoverage',
+            url: 'https://wxs.ign.fr/inspire/inspire/r/wms',
+            layers: 'OI.OrthoimageCoverage',
             enablePickFeatures: false,
             parameters: {
                 format: "image/png",
@@ -117,27 +135,15 @@
             },
         });
 
-
-        // Viewer Cesium
-        const viewer = new Cesium.Viewer('cesiumContainer', {
-            terrainProvider: terrainProvider,
-            imageryProvider: imageryProvider,
-            baseLayerPicker: false,
-            geocoder: false,
-            animation: false,
-            timeline: false,
-            useBrowserRecommendedResolution: true
+        const IgnProvider = new Cesium.WebMapTileServiceImageryProvider({
+            url: 'https://wxs.ign.fr/cartes/geoportail/wmts',
+            layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
+            style: 'normal',
+            format: 'image/png',
+            tileMatrixSetID: 'PM'
         });
 
-        // Positionnement caméra
-        viewer.camera.setView({
-            destination: new Cesium.Cartesian3(4605135.76386452, 574914.9092524701, 4373867.371009422),
-            orientation: {
-                heading: 6.283185307179586,
-                pitch: -0.7870703161505075,
-                roll: 6.283185307179586,
-            }
-        });
+
 
         function addGeoJsonDataSource(viewer, config, layerGeoJsonData, options = {}) {
             const defaultOptions = {
@@ -351,10 +357,12 @@
 
         // Ajout des contrôles pour les imageryLayers
         const imageryLayersControls = [
-            { name: "globeOSM", provider: globeOSM, labelText: "Globe OpenStreetMap", activeBydefault: true },
+            { name: "IgnProvider", provider: IgnProvider, labelText: "Vue IGN", activeBydefault: true },
             { name: "antibes2017Provider", provider: antibes2017Provider, labelText: "Vue aérienne Antibes 2017 (SIG Antibes)", activeBydefault: true },
+            { name: "globeOSM", provider: globeOSM, labelText: "Globe OpenStreetMap" },
             { name: "igo2017Provider", provider: globeIGOProvider, labelText: "Vue aérienne Antibes 2017 (IGO)" },
-            { name: "orthoIgnProvider", provider: orthoIgnProvider, labelText: "Vue aérienne France (IGN)"},
+            { name: "orthoIgnProvider", provider: orthoIgnProvider, labelText: "Vue aérienne France (IGN)" },
+
         ];
 
         const imageryLayers = initializeImageryLayerControls(viewer, imageryLayersControls, 'imageryLayers-list');
@@ -363,33 +371,34 @@
             const addedLayers = {}; // Objet pour stocker les références aux couches ajoutées
 
             imageryLayersControls.forEach(control => {
+                const { provider, name, labelText, activeBydefault } = control;
                 const listItem = document.createElement('li');
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
-                const layer = new Cesium.ImageryLayer(control.provider);
-                if (control.activeBydefault) {
+                const layer = new Cesium.ImageryLayer(provider);
+                if (activeBydefault) {
                     checkbox.checked = true; // Par défaut, la couche est affichée
                     viewer.imageryLayers.add(layer);
                 }
-                addedLayers[control.name] = layer; // Stockez la référence à la couche ajoutée
+                addedLayers[name] = layer; // Stockez la référence à la couche ajoutée
 
                 checkbox.addEventListener('change', function () {
                     if (checkbox.checked) {
-                        if (!addedLayers[control.name]) {
-                            const newLayer = new Cesium.ImageryLayer(control.provider);
+                        if (!addedLayers[name]) {
+                            const newLayer = new Cesium.ImageryLayer(provider);
                             viewer.imageryLayers.add(newLayer);
-                            addedLayers[control.name] = newLayer;
+                            addedLayers[name] = newLayer;
                         } else {
-                            viewer.imageryLayers.add(addedLayers[control.name]);
+                            viewer.imageryLayers.add(addedLayers[name]);
                         }
                     } else {
-                        viewer.imageryLayers.remove(addedLayers[control.name]);
-                        delete addedLayers[control.name]; // Supprimez la référence pour libérer de la mémoire
+                        viewer.imageryLayers.remove(addedLayers[name]);
+                        delete addedLayers[name]; // Supprimez la référence pour libérer de la mémoire
                     }
                 });
 
                 listItem.appendChild(checkbox);
-                listItem.appendChild(document.createTextNode(control.labelText));
+                listItem.appendChild(document.createTextNode(labelText));
                 document.getElementById(parentId).appendChild(listItem);
             });
 
@@ -417,8 +426,7 @@
                 checkbox.addEventListener('change', function () {
                     if (checkbox.checked) {
                         if (!addPrimitivesLayers[name]) {
-                            const newlayer = new Cesium.Cesium3DTileset({ url: url });
-                            newlayer.readyPromise.then(function (tileset) {
+                            Cesium.Cesium3DTileset.fromUrl(url).then(function (tileset) {
                                 viewer.scene.primitives.add(tileset);
                                 addPrimitivesLayers[name] = tileset;
                             }).catch(function (error) {
@@ -462,7 +470,7 @@
                 } else if (service === 'nominatim') {
                     url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=5`;
                 }
-                
+
                 const response = await fetch(url);
                 console.log(response);
                 return response.json();
