@@ -40,6 +40,7 @@
             geoJsonDataSources: {}
         };
 
+        //TODO: Modifier fonction pour récupérer icône depuis répertoire d'image de la couche + définir url de base dans les propriétés de la couche
         const layers = [
             {
                 name: "COLLEGES",
@@ -78,7 +79,8 @@
             geocoder: false,
             animation: false,
             timeline: false,
-            useBrowserRecommendedResolution: true
+            useBrowserRecommendedResolution: true,
+            //infoBox : true
         });
 
         // Positionnement caméra
@@ -91,15 +93,15 @@
             }
         });
 
-        // Source Bati3D IGO - 3Dtiles - Servit par IGO
-        const bati3D_IGO_tileset = new Cesium.Cesium3DTileset({
-            url: 'https://igoprod.igo.fr/SG/antibes/b3dm/Antibes_BatiGlobal.410970/tileset.json'
-        });
+        // // Source Bati3D IGO - 3Dtiles - Servit par IGO
+        // const bati3D_IGO_tileset = new Cesium.Cesium3DTileset({
+        //     url: 'https://igoprod.igo.fr/SG/antibes/b3dm/Antibes_BatiGlobal.410970/tileset.json'
+        // });
 
-        // Source Bati3D IGO - 3Dtiles - Servit par IGO
-        const mesh3D_IGO_tileset = new Cesium.Cesium3DTileset({
-            url: 'https://igoprod.igo.fr/SG/antibes/b3dm/AntibesMesh3D/tileset.json'
-        });
+        // // Source Bati3D IGO - 3Dtiles - Servit par IGO
+        // const mesh3D_IGO_tileset = new Cesium.Cesium3DTileset({
+        //     url: 'https://igoprod.igo.fr/SG/antibes/b3dm/AntibesMesh3D/tileset.json'
+        // });
 
         // Source Globe OpenStreetMap (OSM) servit par les serveurs d'OSM
         const globeOSM = new Cesium.OpenStreetMapImageryProvider({
@@ -150,8 +152,8 @@
                 urlGeoJsonDataSource: config.urlGeoserver + "/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=" + layerGeoJsonData + "&outputFormat=application/json",
                 markerSymbol: 'marker',
                 verticalAmount: 100,
-                distanceDisplayCondition: new Cesium.DistanceDisplayCondition(1.0, 40000.0),
-                distanceDisplayConditionLabel: new Cesium.DistanceDisplayCondition(1.0, 40000.0),
+                distanceDisplayCondition: new Cesium.DistanceDisplayCondition(1.0, 400000.0),
+                distanceDisplayConditionLabel: new Cesium.DistanceDisplayCondition(1.0, 400000.0),
                 markerSize: 50,
                 polylineWidth: 1,
                 billboardWidth: 45,
@@ -188,6 +190,14 @@
 
                     for (let i = 0; i < entities.length; i++) {
                         const entity = entities[i];
+                        //console.log(entities[i]);
+
+                        // Définir les propriétés layerName et id pour l'entité
+                        entity.properties.layerName = layerGeoJsonData.split(":")[1]; // Supposons que layerGeoJsonData soit de la forme "Antibes:COLLEGES"
+                        entity.properties.id = entity.id.split(".")[1]; // Ou une autre propriété unique de votre GeoJSON, par exemple entity.properties.someUniqueId
+
+                        //console.log(entity.properties.id);
+
                         const position = entity.position.getValue(Cesium.JulianDate.now());
 
                         // Add a vertical offset
@@ -208,6 +218,7 @@
                         // Display the entity icon
                         if (urlBillboardImage) {
                             entity.billboard.image = urlBillboardImage;
+
                         }
 
                         entity.billboard.width = billboardWidth;
@@ -216,7 +227,8 @@
                         entity.billboard.distanceDisplayCondition = distanceDisplayCondition;
 
                         // Set a scale based on the distance to the camera
-                        entity.billboard.scaleByDistance = new Cesium.NearFarScalar(1, 1, 40000.0, 0.5);
+                        entity.billboard.scaleByDistance = new Cesium.NearFarScalar(1, 1, 400000.0, 0.005);
+
 
                         const entityName = getEntityName(entity);
 
@@ -235,6 +247,15 @@
                             distanceDisplayCondition: distanceDisplayConditionLabel,
                             show: false
                         });
+
+                        getImageHtmlForEntity(entity.properties.layerName, entity.properties.id).then(result => {
+                            if (result) {
+                                entity.description = result;
+                                //console.log(result);
+                            }
+                        });
+
+
                     }
                     return dataSource;
                 })
@@ -261,44 +282,6 @@
             // Retourner une valeur par défaut si aucune propriété de nom n'a été trouvée
             return 'Unknown';
         }
-
-
-        //##--Affiche le nom de l'entité au sruvol de la souris --#
-        function setupEntityHoverHandlers(viewer) {
-            let hoveredEntity = null;
-
-            // Afficher le label de l'entité lorsque la souris passe sur l'entité
-            viewer.screenSpaceEventHandler.setInputAction(function (movement) {
-                const pickedObject = viewer.scene.pick(movement.endPosition);
-                if (Cesium.defined(pickedObject) && Cesium.defined(pickedObject.id)) {
-                    if (hoveredEntity !== pickedObject.id) {
-                        if (hoveredEntity !== null) {
-                            hoveredEntity.label.show = false;
-                        }
-                        hoveredEntity = pickedObject.id;
-                        hoveredEntity.label.show = true;
-                    }
-                } else {
-                    if (hoveredEntity !== null) {
-                        hoveredEntity.label.show = false;
-                        hoveredEntity = null;
-                    }
-                }
-            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-
-            // Cacher le label de l'entité lorsque la souris quitte l'entité
-            viewer.screenSpaceEventHandler.setInputAction(function (movement) {
-                if (hoveredEntity !== null) {
-                    hoveredEntity.label.show = false;
-                    hoveredEntity = null;
-                }
-            }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
-        }
-
-        // Utilisation :
-        setupEntityHoverHandlers(viewer);
-        //##---------#
-
 
         // Fonction d'ajout ou de suppression des couches de données
         initializeGeoJsonLayers(viewer, layers, config, 'layer-list').then(results => {
@@ -351,6 +334,50 @@
                 return results; // Retournez les résultats pour une utilisation ultérieure si nécessaire
             });
         }
+
+
+
+
+
+        //##--Affiche le nom de l'entité au sruvol de la souris --#
+        function setupEntityHoverHandlers(viewer) {
+            let hoveredEntity = null;
+
+            // Afficher le label de l'entité lorsque la souris passe sur l'entité
+            viewer.screenSpaceEventHandler.setInputAction(function (movement) {
+                const pickedObject = viewer.scene.pick(movement.endPosition);
+                if (Cesium.defined(pickedObject) && Cesium.defined(pickedObject.id)) {
+                    if (hoveredEntity !== pickedObject.id) {
+                        if (hoveredEntity !== null) {
+                            hoveredEntity.label.show = false;
+                        }
+                        hoveredEntity = pickedObject.id;
+                        hoveredEntity.label.show = true;
+                    }
+                } else {
+                    if (hoveredEntity !== null) {
+                        hoveredEntity.label.show = false;
+                        hoveredEntity = null;
+                    }
+                }
+            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+            // Cacher le label de l'entité lorsque la souris quitte l'entité
+            viewer.screenSpaceEventHandler.setInputAction(function (movement) {
+                if (hoveredEntity !== null) {
+                    hoveredEntity.label.show = false;
+                    hoveredEntity = null;
+                }
+            }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+        }
+
+        // Utilisation :
+        setupEntityHoverHandlers(viewer);
+        //##---------#
+
+
+
+
 
 
 
@@ -611,6 +638,70 @@
                 updateViewerWithCoordinates
             };
         }
+
+
+        // Fonction pour construire l'URL de l'image
+        function buildImageUrl(layerName, entityId) {
+            return "http://localhost:8585/geoserver/www/images/antibes/" + layerName + "/" + entityId + ".jpg";
+        }
+
+        // Fonction pour vérifier si l'image existe à l'URL donnée
+        function imageExists(url) {
+            return new Promise((resolve, reject) => {
+                var img = new Image();
+                img.onload = function () { resolve(true); };
+                img.onerror = function () { resolve(false); };
+                img.src = url;
+            });
+        }
+
+        // Fonction pour obtenir le contenu HTML pour l'InfoBox
+        async function getImageHtmlForEntity(layerName, entityId) {
+            const imageUrl = buildImageUrl(layerName, entityId);
+            const exists = await imageExists(imageUrl);
+
+            if (exists) {
+                return '<img src="' + imageUrl + '" alt="Image de l\'entité" style="width:100%; height:auto;min-height:450px;">';
+            } else {
+                //console.log("L'image n'existe pas à l'URL : " + imageUrl);
+                return false;
+            }
+        }
+
+        //Fonction pour obtenir les propriétés d'une entité
+        function getEntityProperties(entity) {
+            return {
+                layerName: entity.properties.layerName,
+                entityId: entity.properties.id
+            };
+        }
+
+        //Fonction pour gérer le clic sur une entité
+        function handleEntityClick(viewer, click) {
+            const pickedObject = viewer.scene.pick(click.position);
+
+            if (Cesium.defined(pickedObject) && Cesium.defined(pickedObject.id)) {
+                const entity = pickedObject.id;
+                const { layerName, entityId } = getEntityProperties(entity);
+                const htmlContent = getImageHtmlForEntity(layerName, entityId);
+
+                // Accédez au div "cesium-infoBox-description" et insérez le contenu
+                const descriptionDiv = viewer.infoBox.frame.contentDocument.querySelector('.cesium-infoBox-description');
+                if (descriptionDiv) {
+                    descriptionDiv.innerHTML = htmlContent;
+                }
+
+                // Assurez-vous que l'infoBox est visible
+                viewer.infoBox.show = true;
+
+            }
+        }
+
+        // //Configurer le gestionnaire d'événements pour le clic de la souris
+        // viewer.screenSpaceEventHandler.setInputAction(function (click) {
+        //     handleEntityClick(viewer, click);
+        // }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
     </script>
 </body>
 
