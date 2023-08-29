@@ -1,21 +1,71 @@
-function createSearchModule(
-  viewer,
-  addressInputId,
-  searchButtonId,
-  geocodinServiceId
-) {
-  const addressInput = document.getElementById(addressInputId);
-  const searchButton = document.getElementById(searchButtonId);
-  const geocodingService = document.getElementById(geocodinServiceId);
+/**
+ * Fonction pour ajouter un module de recherche d'adresse avec des options de géocodage configurables.
+ * @param {Object} viewer - L'instance du viewer Cesium.
+ * @param {string} containerId - L'ID du conteneur DOM où le module de recherche sera ajouté.
+ * @param {Object} [options={}] - Les options de configuration pour le module de recherche.
+ * @param {Array} [options.geocodingServices] - Les services de géocodage disponibles pour la recherche.
+ * @returns {Object} - Un ensemble de fonctions utilitaires liées au module de recherche.
+ */
+export default function addSearchModule(viewer, containerId, options = {}) {
+  // Initialisation des éléments du DOM
+  const container = document.getElementById(containerId);
+  const addressInput = document.createElement("input");
+  const searchButton = document.createElement("button");
+  const geocodingService = document.createElement("select");
   const resultsContainer = document.createElement("div");
-  resultsContainer.classList.add("results-container");
-  addressInput.parentNode.insertBefore(
-    resultsContainer,
-    addressInput.nextSibling
-  );
+
+  // Configuration des éléments du DOM
+  addressInput.placeholder = "Entrez une adresse...";
+  searchButton.textContent = "Rechercher";
+  resultsContainer.classList.add("adress-search-results-container");
+
+  // Ajout des options de géocodage configurables
+  const geocodingServices = options.geocodingServices || [
+    { value: "ban", text: "BAN (Base Adresse Nationale)" },
+    { value: "nominatim", text: "Nominatim (OpenStreetMap)" },
+  ];
+
+  geocodingServices.forEach((service) => {
+    const option = document.createElement("option");
+    option.value = service.value;
+    option.textContent = service.text;
+    geocodingService.appendChild(option);
+  });
+
+  // Ajout des éléments au conteneur
+  container.appendChild(addressInput);
+  container.appendChild(geocodingService);
+  container.appendChild(searchButton);
+  container.appendChild(resultsContainer);
+
+  // Fonction pour vérifier si un élément est en dehors de la zone de recherche et du bouton de recherche
+  function isOutsideSearchZone(target) {
+    return (
+      target !== addressInput &&
+      target !== searchButton &&
+      target !== geocodingService &&
+      !resultsContainer.contains(target)
+    );
+  }
+
+  // Gestionnaire d'événements pour le clic en dehors de la zone de recherche
+  document.addEventListener("click", function (event) {
+    if (isOutsideSearchZone(event.target)) {
+      // Réinitialisez la recherche
+      addressInput.value = "";
+      resultsContainer.innerHTML = "";
+    }
+  });
+
   let currentEntity = null;
 
-  // Fonction pure pour récupérer les résultats de recherche
+  /**
+   * Récupère les résultats de recherche d'une adresse.
+   *
+   * @param {string} query - La requête de recherche.
+   * @param {string} service - Le service de géocodage à utiliser ("ban" ou "nominatim").
+   * @returns {Promise<Object>} - Les résultats de la recherche.
+   */
   async function getSearchResults(query, service) {
     let url;
     if (service === "ban") {
@@ -29,7 +79,15 @@ function createSearchModule(
     return response.json();
   }
 
-  // Fonction pure pour mettre à jour le conteneur de résultats
+  /**
+   * Met à jour le conteneur de résultats avec les données de recherche.
+   *
+   * @param {Object} data - Les données de recherche.
+   * @param {string} service - Le service de géocodage utilisé.
+   * @param {HTMLElement} resultsContainer - Le conteneur de résultats.
+   * @param {HTMLInputElement} addressInput - L'élément input pour l'adresse.
+   * @param {Object} viewer - L'instance du viewer Cesium.
+   */
   function updateResultsContainer(
     data,
     service,
@@ -49,7 +107,7 @@ function createSearchModule(
 
     items.forEach((item) => {
       const resultItem = document.createElement("div");
-      resultItem.classList.add("result-item");
+      resultItem.classList.add("adress-search-result-item");
 
       // Récupérez le label et les coordonnées en fonction du service
       let label, coordinates;
@@ -68,11 +126,18 @@ function createSearchModule(
         addressInput.value = label;
         resultsContainer.innerHTML = ""; // Videz les résultats après la sélection
 
+        // Créez une description à partir des données d'adresse
+        const entityDescription = createDescriptionFromAddressData(
+          item,
+          service
+        );
+
         // Déclenchez le déplacement (flyto) vers ces coordonnées
         currentEntity = updateViewerWithCoordinates(
           viewer,
           coordinates,
-          currentEntity
+          currentEntity,
+          entityDescription // Passez la description ici
         );
       });
 
@@ -80,7 +145,7 @@ function createSearchModule(
     });
   }
 
-  // Utilisez les fonctions dans vos gestionnaires d'événements
+  // Gestionnaire d'événements pour la saisie de l'adresse
   addressInput.addEventListener("input", async () => {
     const query = addressInput.value;
     const service = geocodingService.value;
@@ -99,7 +164,13 @@ function createSearchModule(
     }
   });
 
-  // Fonction pure pour récupérer les coordonnées d'une adresse
+  /**
+   * Récupère les coordonnées d'une adresse.
+   *
+   * @param {string} address - L'adresse à rechercher.
+   * @param {string} service - Le service de géocodage à utiliser.
+   * @returns {Promise<Array>} - Les coordonnées [longitude, latitude].
+   */
   async function getCoordinatesFromAddress(address, service) {
     let url, data;
 
@@ -124,8 +195,20 @@ function createSearchModule(
     return null;
   }
 
-  // Fonction pure pour mettre à jour le viewer avec les coordonnées
-  function updateViewerWithCoordinates(viewer, coordinates, currentEntity) {
+  /**
+   * Met à jour le viewer Cesium avec les coordonnées fournies.
+   *
+   * @param {Object} viewer - L'instance du viewer Cesium.
+   * @param {Array} coordinates - Les coordonnées [longitude, latitude].
+   * @param {Object} currentEntity - L'entité actuellement affichée.
+   * @returns {Object} - La nouvelle entité ajoutée.
+   */
+  function updateViewerWithCoordinates(
+    viewer,
+    coordinates,
+    currentEntity,
+    description
+  ) {
     // Supprimez l'entité précédente si elle existe
     if (currentEntity) {
       viewer.entities.remove(currentEntity);
@@ -146,16 +229,20 @@ function createSearchModule(
     });
 
     // Ajoutez une nouvelle entité et retournez-la
+    // Ajoutez une nouvelle entité et retournez-la
     return viewer.entities.add({
       position: Cesium.Cartesian3.fromDegrees(coordinates[0], coordinates[1]),
       point: {
         pixelSize: 10,
         color: Cesium.Color.RED,
       },
+      description: description, // Utilisez la description ici
+      name:"Adresse recherchée",
+      id:"SearchAddressEntity",
     });
   }
 
-  // Lorsque le bouton de recherche est cliqué
+  // Gestionnaire d'événements pour le bouton de recherche
   searchButton.addEventListener("click", async () => {
     const address = addressInput.value;
     const service = geocodingService.value; // Obtenez le service choisi
@@ -188,4 +275,15 @@ function createSearchModule(
   };
 }
 
-export default createSearchModule;
+// Fonction pour créer une description à partir des données d'adresse
+function createDescriptionFromAddressData(item, service) {
+  let description = "";
+  if (service === "ban") {
+    description += `${item.properties.label}<br>`;
+    // Vous pouvez ajouter d'autres champs si nécessaire
+  } else if (service === "nominatim") {
+    description += `${item.display_name}<br>`;
+    // Vous pouvez ajouter d'autres champs si nécessaire
+  }
+  return description;
+}

@@ -1,13 +1,9 @@
-import {
-  getImageHtmlForEntity,
-  getEntityName,
-  stringifySelectedProperties,
-} from "./utils.js";
+import { getEntityName, generateTabbedDescriptionForEntity } from "./utils.js";
 
-function addGeoJsonDataSource(viewer, config, layerGeoJsonName, options = {}) {
+export function addGeoJsonDataSource(viewer, baseUrlGeoServer, layerGeoJsonName, options = {}) {
   const defaultOptions = {
     urlGeoJsonDataSource:
-      config.urlGeoserver +
+    baseUrlGeoServer +
       "/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=" +
       layerGeoJsonName +
       "&outputFormat=application/json",
@@ -99,7 +95,7 @@ function addGeoJsonDataSource(viewer, config, layerGeoJsonName, options = {}) {
         );
 
         const entityName = getEntityName(entity);
-
+        entity.name = entityName;
         entity.label = new Cesium.LabelGraphics({
           text: entityName,
           heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
@@ -116,9 +112,7 @@ function addGeoJsonDataSource(viewer, config, layerGeoJsonName, options = {}) {
           show: false,
         });
 
-        // Stockez les propriétés originales de l'entité
-        //const originalProperties = stringifySelectedProperties(entity.properties);
-        //console.log(entity.properties);
+                // Stockez les propriétés originales de l'entité
 
         //TODO : récupérer les propriétés originales et les mettre dans un deuxième onglet
         const entityProperties = entity.properties;
@@ -133,17 +127,27 @@ function addGeoJsonDataSource(viewer, config, layerGeoJsonName, options = {}) {
             value && value._value !== undefined ? value._value : value;
         });
 
-        console.log(usefulProperties);
+        let htmlContent = "<table>";
+        for (let key in usefulProperties) {
+          htmlContent += `<tr><td><strong>${key}</strong></td><td>${usefulProperties[key]}</td></tr>`;
+        }
+        htmlContent += "</table>";
 
-        entity.name = getEntityName(entity);
-        //console.log(urlFiches);
+        entity.name = entityName;
+
         if (urlFiches) {
-          entity.description =
-            '<img src="' +
+          const urlFiche ='<img src="' +
             urlFiches +
             entity.properties.id +
             ".jpg" +
             '" alt="Image de l\'entité" style="width:100%; height:auto;min-height:500px;">';
+
+            const descriptionContent = urlFiche;
+            const codeContent = htmlContent;
+            
+            entity.description = generateTabbedDescriptionForEntity(descriptionContent, codeContent);
+        }else{
+          entity.description = htmlContent;
         }
       }
       return dataSource;
@@ -154,10 +158,10 @@ function addGeoJsonDataSource(viewer, config, layerGeoJsonName, options = {}) {
     });
 }
 
-function initializeGeoJsonLayers(viewer, layers, config, parentId) {
+export function initializeGeoJsonLayers(viewer, layers, baseUrlGeoServer, parentId) {
   // Créez un tableau pour stocker toutes les promesses
   const allGeoJsonsourcesPromises = layers.map((layer) => {
-    return addGeoJsonDataSource(viewer, config, layer.name, {
+    return addGeoJsonDataSource(viewer, baseUrlGeoServer, layer.name, {
       urlBillboardImage: layer.icon,
       categorieLabelText: layer.labelText,
       urlFiches: layer.urlFiches,
@@ -201,5 +205,3 @@ function initializeGeoJsonLayers(viewer, layers, config, parentId) {
     return results; // Retournez les résultats pour une utilisation ultérieure si nécessaire
   });
 }
-
-export { initializeGeoJsonLayers, addGeoJsonDataSource };

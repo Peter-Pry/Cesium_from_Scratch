@@ -3,38 +3,57 @@
 
 <head>
     <meta charset="utf-8">
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Cesium.js"></script>
+    
+    <!-- Stylesheets -->
     <link href="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
+    <!-- Scripts -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Cesium.js"></script>
 </head>
 
 <body>
+    <!-- Cesium Container -->
     <div id="cesiumContainer"></div>
-    <div id="sidebar">
-        <div id="searchBar">
-            <select id="geocodingService">
-                <option value="ban">Base d'Adresse Nationale</option>
-                <option value="nominatim">Nominatim (OpenStreetMap)</option>
-            </select>
-            <input type="text" id="addressInput" placeholder="Entrez une adresse...">
-            <button id="searchButton">Rechercher</button>
-            <div class="results-container"></div>
-        </div>
-        <h3>Imageries</h3>
-        <ul id="imageryLayers-list">
-            <!-- Les éléments de la liste seront ajoutés dynamiquement avec JavaScript -->
-        </ul>
-        <h3>Modèles 3D</h3>
-        <ul id="primitives-list">
-            <!-- Les éléments de la liste seront ajoutés dynamiquement avec JavaScript -->
-        </ul>
-        <h3>Données</h3>
-        <ul id="layer-list">
-            <!-- Les éléments de la liste seront ajoutés dynamiquement avec JavaScript -->
-        </ul>
+
+    <!-- Infobox personnalisée -->
+    <div id="customInfobox" class="custom-infobox">
+        <button class="close-button" aria-label="Fermer l'infobox">X</button>
+        <div id="infoboxContent"></div>
     </div>
-    <script type="module" src="main.js"></script>
+
+    <!-- Sidebar -->
+    <!-- Open Menu Button -->
+    <button id="open-sidebar-button" aria-label="Menu">☰</button>
+    <aside id="sidebar">
+        <!-- Close Menu Button -->
+        <button id="close-sidebar-button" aria-label="Fermer le menu">X</button>
+        
+        <!-- Search Bar -->
+        <div id="searchBar">
+        </div>
+        
+        <!-- Imageries List -->
+        <section>
+            <h3>Imageries</h3>
+            <ul id="imageryLayers-list"></ul>
+        </section>
+        
+        <!-- 3D Models List -->
+        <section>
+            <h3>Modèles 3D</h3>
+            <ul id="primitives-list"></ul>
+        </section>
+        
+        <!-- Data List -->
+        <section>
+            <h3>Données</h3>
+            <ul id="layer-list"></ul>
+        </section>
+    </aside>
+
+    <!-- Main Script -->
+    <script type="module" src="main.js" async></script>
 </body>
 
 </html>
