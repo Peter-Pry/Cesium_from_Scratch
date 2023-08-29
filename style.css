@@ -36,13 +36,52 @@ ul li {
     position: absolute;
     width: 100%;
     z-index: 1000;
+    background-color: white;
 }
 
 .result-item {
     padding: 5px 10px;
     cursor: pointer;
+    color:black;
 }
 
 .result-item:hover {
     background-color: #f5f5f5;
 }
+
+.cesium-tooltip {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 999;
+}
+
+
+.tab-content {
+    display: none;
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  .tab-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .tab-button {
+    cursor: pointer;
+    padding: 10px;
+    border: none;
+    background-color: #f1f1f1;
+  }
+  
+  .tab-button.active {
+    background-color: #ddd;
+  }
