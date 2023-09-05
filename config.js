@@ -1,6 +1,7 @@
 const urls = {
   urlGeoserver: "http://localhost:8585/geoserver",
   urlImagesServer: "http://localhost:8585/geoserver/www/images",
+  urlTileSetsServer: "http://localhost:8585/geoserver/www/tilesets",
 };
 
 // Source Globe OpenStreetMap (OSM) servit par les serveurs d'OSM
@@ -8,7 +9,7 @@ const globeOSM = new Cesium.OpenStreetMapImageryProvider({
   url: "https://a.tile.openstreetmap.org/",
 });
 
-// Vue aérienne Antibes 2017 (Geoserver)
+//Vue aérienne Antibes 2017 (Geoserver)
 const antibes2017Provider = new Cesium.WebMapServiceImageryProvider({
   url: "https://sig-test.ville-antibes.fr/geoserver/cesium/wms",
   layers: "Antibes_OrthoVraie_LB93_2017_withmask",
@@ -18,6 +19,16 @@ const antibes2017Provider = new Cesium.WebMapServiceImageryProvider({
     transparent: "true",
   },
 });
+
+// const antibes2017Provider = new Cesium.WebMapServiceImageryProvider({
+//   url: "http://localhost:8585/geoserver/wms",
+//   layers: "map:TIF_LB93",
+//   enablePickFeatures: false,
+//   parameters: {
+//     format: "image/png",
+//     transparent: "true",
+//   },
+// });
 
 // Source Vue aérienne Antibes 2017 servit par IGO
 const globeIGOProvider = new Cesium.WebMapServiceImageryProvider({
@@ -118,7 +129,46 @@ export const config = {
       url: "https://cesium-dev.ville-antibes.fr/data2/3dtiles/mesh/pyramid/tileset.json",
       labelText: "Mesh3D SIG Antibes",
     },
+    // {
+    //   name: "mesh3D_fort_carre_tileset",
+    //   url: urls.urlTileSetsServer+"/fort_carre/tileset.json",
+    //   labelText: "Mesh3D Fort Carré (Geoserver local)",
+    // },
+    // {
+    //   name: "mesh3D_antibes_tileset",
+    //   url: urls.urlTileSetsServer+"/antibes/tileset.json",
+    //   labelText: "Mesh3D Antibes (Geoserver local)",
+    // },
   ],
+  views: {
+    antibes: {
+      name: "Antibes",
+      destination: [4605135.76386452, 574914.9092524701, 4373867.371009422],
+      orientation: {
+        heading: 6.283185307179586,
+        pitch: -0.7870703161505075,
+        roll: 6.283185307179586,
+      },
+    },
+    antibes_centre: {
+      name: "Centre",
+      destination: [4592113.451525292, 574445.367525959, 4374454.623695505],
+      orientation: {
+        heading: 5.425059983218845,
+        pitch: -0.4521988345390495,
+        roll: 6.280361263179284,
+      },
+    },
+    fort_carre: {
+      name: "Fort Carré",
+      destination: [4591491.266512864, 574128.7943305084, 4375245.716108861],
+      orientation: {
+        heading: 6.283185307179586,
+        pitch: -0.7870703146044944,
+        roll: 6.283185307179586,
+      },
+    },
+  },
   cameraCoordinates: {
     destination: new Cesium.Cartesian3(
       4605135.76386452,

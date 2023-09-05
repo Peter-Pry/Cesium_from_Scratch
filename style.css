@@ -177,3 +177,99 @@ body,
     /* empile les boutons verticalement */
   }
 }
+
+#layer-list{
+  display: flex;
+  flex-direction: column;
+}
+
+#layer-list li{
+  display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+
+.ico-data{
+  width: 35px;
+  height: 35px;
+}
+
+#views-buttons-container{
+  margin-top:20px;
+}
+
+
+/* Toggle Button */
+.cm-toggle {
+	-webkit-appearance: none;
+	-webkit-tap-highlight-color: transparent;
+	position: relative;
+	border: 0;
+	outline: 0;
+	cursor: pointer;
+	/* margin: 10px 20px; */
+}
+
+
+/* To create surface of toggle button */
+.cm-toggle:after {
+	content: '';
+	width: 50px;
+	height: 26px;
+	display: inline-block;
+	background: rgba(196, 195, 195, 0.55);
+	border-radius: 18px;
+	clear: both;
+}
+
+
+/* Contents before checkbox to create toggle handle */
+.cm-toggle:before {
+	content: '';
+	width: 24px;
+	height: 24px;
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 1px;
+	border-radius: 50%;
+	background: rgb(255, 255, 255);
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+
+/* Shift the handle to left on check event */
+.cm-toggle:checked:before {
+	left: 24px;
+	box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+/* Background color when toggle button will be active */
+.cm-toggle:checked:after {
+	background: #16a085;
+}
+
+/* CSS */
+.button-11 {
+  /* display: flex;
+  flex-direction: row; */
+  align-items: center;
+  padding: 6px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  /* border-radius: 0px; */
+  color: #3D3D3D;
+  background: #fff;
+  border: none;
+  box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin: 0px 2px;
+}
+
+.button-11:focus {
+  box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+  outline: 0;
+}

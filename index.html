@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    
+
     <!-- Stylesheets -->
     <link href="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -28,23 +28,31 @@
     <aside id="sidebar">
         <!-- Close Menu Button -->
         <button id="close-sidebar-button" aria-label="Fermer le menu">X</button>
-        
-        <!-- Search Bar -->
-        <div id="searchBar">
-        </div>
-        
+
+        <section>
+            <h3>Recherche d'adresse</h3>
+            <!-- Search Bar -->
+            <div id="searchBar">
+            </div>
+        </section>
+
+        <section>
+            <h3>Vues</h3>
+            <div id="views-buttons-container"></div>
+        </section>
+
         <!-- Imageries List -->
         <section>
             <h3>Imageries</h3>
             <ul id="imageryLayers-list"></ul>
         </section>
-        
+
         <!-- 3D Models List -->
         <section>
             <h3>Modèles 3D</h3>
             <ul id="primitives-list"></ul>
         </section>
-        
+
         <!-- Data List -->
         <section>
             <h3>Données</h3>
@@ -53,6 +61,7 @@
     </aside>
 
     <!-- Main Script -->
+    <script src="GeoserverTerrainProvider.js"></script>
     <script type="module" src="main.js" async></script>
 </body>
 
