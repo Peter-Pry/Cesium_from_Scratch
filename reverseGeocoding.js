@@ -9,7 +9,7 @@ export function getReverseGeocoding(latitude, longitude) {
   return new Promise((resolve, reject) => {
     // Construction de l'URL pour le service de géocodage inverse de Nominatim
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
-    
+
     // Effectue une requête au service de géocodage inverse
     fetch(url)
       .then((response) => response.json())

@@ -28,10 +28,7 @@ function Add3DTileModels(viewer, primitivesSources, parentId) {
             })
             .catch(function (error) {
               // Afficher une erreur si le chargement du modèle 3D Tile échoue
-              console.error(
-                "Erreur lors du chargement du jeu de tuiles 3D :",
-                error
-              );
+              console.error("Erreur lors du chargement du jeu de tuiles 3D :", error);
             });
         } else {
           viewer.scene.primitives.add(addPrimitivesLayers[name]);

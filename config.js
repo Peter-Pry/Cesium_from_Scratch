@@ -1,8 +1,115 @@
 const urls = {
-  urlGeoserver: "http://localhost:8585/geoserver",
-  urlImagesServer: "http://localhost:8585/geoserver/www/images",
+  urlGeoserver: "https://cesium.smartantibes.ville-antibes.fr/geoserver",
+  urlImagesServer: "https://cesium.smartantibes.ville-antibes.fr/geoserver/www",
   urlTileSetsServer: "http://localhost:8585/geoserver/www/tilesets",
 };
+
+const urlImagesServer = "https://cesium.smartantibes.ville-antibes.fr/geoserver/www";
+const urlGeoserver = "https://cesium.smartantibes.ville-antibes.fr/geoserver";
+
+
+const layers = [
+  {
+    name: "antibes:AIRES_DE_JEUX",
+    labelText: "Aires de jeux",
+    //icon: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX/AIRES_DE_JEUX.png",
+    urlFiches: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX/",
+    markerSymbol: "city",
+  },
+  {
+    name: "antibes:CENTRE_DE_LOISIRS",
+    labelText: "Centre de loisirs",
+    icon: urls.urlImagesServer + "/antibes/CENTRE_DE_LOISIRS/CENTRE_DE_LOISIRS.png",
+    urlFiches: urls.urlImagesServer + "/antibes/CENTRE_DE_LOISIRS/",
+  },
+  {
+    name: "antibes:COLLEGES",
+    labelText: "Collèges",
+    categorie: "Education",
+    icon: urls.urlImagesServer + "/antibes/COLLEGES/COLLEGES.png",
+    urlFiches: urls.urlImagesServer + "/antibes/COLLEGES/",
+  },
+  {
+    name: "antibes:ECOLES_ELEMENTAIRES",
+    labelText: "Écoles élémentaires",
+    categorie: "Education",
+    icon: urls.urlImagesServer + "/antibes/ECOLES_ELEMENTAIRES/ECOLES_ELEMENTAIRES.png",
+    urlFiches: urls.urlImagesServer + "/antibes/ECOLES_ELEMENTAIRES/",
+  },
+  {
+    name: "antibes:ECOLES_MATERNELLES",
+    labelText: "Écoles maternelles",
+    categorie: "Education",
+    icon: urls.urlImagesServer + "/antibes/ECOLES_MATERNELLES/ECOLES_MATERNELLES.png",
+    urlFiches: urls.urlImagesServer + "/antibes/ECOLES_MATERNELLES/",
+  },
+  {
+    name: "antibes:ECOLES_PRIVEES",
+    labelText: "Écoles privées",
+    categorie: "Education",
+    icon: urls.urlImagesServer + "/antibes/ECOLES_PRIVEES/ECOLES_PRIVEES.png",
+    //iconByServer: true,
+    urlFiches: urls.urlImagesServer + "/antibes/ECOLES_PRIVEES/",
+  },
+  {
+    name: "antibes:EQUIPEMENTS_CULTURELS_ART_URBAIN",
+    labelText: "Art Urbain",
+    categorie: "Culture",
+    icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ART_URBAIN/EQUIPEMENTS_CULTURELS_ART_URBAIN.png",
+    urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ART_URBAIN/",
+  },
+  {
+    name: "antibes:EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS",
+    labelText: "Établissement culturels",
+    icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS/EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS.png",
+    urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS/",
+    uniqueIcon: true,
+  },
+  {
+    name: "antibes:EQUIPEMENTS_CULTURELS_PATRIMOINE",
+    labelText: "Patrimoine",
+    icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE/EQUIPEMENTS_CULTURELS_PATRIMOINE.png",
+    urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE/",
+    uniqueIcon: true,
+  },
+  {
+    name: "antibes:EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE",
+    labelText: "Patrimoine durable",
+    icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE/EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE.png",
+    urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE/",
+  },
+  {
+    name: "antibes:EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT",
+    labelText: "Sculpture à ciel ouvert",
+    icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT/EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT.png",
+    urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT/",
+    uniqueIcon: true,
+  },
+  {
+    name: "antibes:JARDINS_PARTAGES",
+    labelText: "Jardins partagés",
+    icon: urls.urlImagesServer + "/antibes/JARDINS_PARTAGES/JARDINS_PARTAGES.png",
+    urlFiches: urls.urlImagesServer + "/antibes/JARDINS_PARTAGES/",
+  },
+  {
+    name: "antibes:LIEUX_ACCUEIL_ENFANTS_PARENTS",
+    labelText: "Lieux accueil enfants-parents",
+    icon: urls.urlImagesServer + "/antibes/LIEUX_ACCUEIL_ENFANTS_PARENTS/LIEUX_ACCUEIL_ENFANTS_PARENTS.png",
+    urlFiches: urls.urlImagesServer + "/antibes/LIEUX_ACCUEIL_ENFANTS_PARENTS/",
+  },
+  {
+    name: "antibes:LUDOTHEQUES",
+    labelText: "Ludothèques",
+    icon: urls.urlImagesServer + "/antibes/LUDOTHEQUES/LUDOTHEQUES.png",
+    urlFiches: urls.urlImagesServer + "/antibes/LUDOTHEQUES/",
+  },
+  {
+    name: "antibes:EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS",
+    labelText: "Artistes et Artisans d'art",
+    icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS/EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS.png",
+    urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS/",
+  },
+];
 
 // Source Globe OpenStreetMap (OSM) servit par les serveurs d'OSM
 const globeOSM = new Cesium.OpenStreetMapImageryProvider({
@@ -85,34 +192,7 @@ export const config = {
       labelText: "Vue aérienne France IGN",
     },
   ],
-  layers: [
-    //TODO: Modifier fonction pour récupérer icône depuis répertoire d'image de la couche + définir url de base dans les propriétés de la couche
-    {
-      name: "Antibes:COLLEGES",
-      labelText: "Collèges",
-      icon: urls.urlImagesServer + "/antibes/COLLEGES.png",
-      urlFiches: urls.urlImagesServer + "/antibes/COLLEGES/",
-    },
-    {
-      name: "Antibes:AIRES_DE_JEUX",
-      labelText: "Aires de jeux",
-      icon: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX.png",
-      urlFiches: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX/",
-    },
-    {
-      name: "Antibes:EQUIPEMENTS_CULTURELS_STREET_ART",
-      labelText: "Street Art",
-      icon: urls.urlImagesServer + "/antibes/Art Urbain.png",
-      //urlFiches: config.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_STREET_ART/"
-    },
-    {
-      name: "Antibes:ARTISTES_ARTISANS_ART",
-      labelText: "Artistes & artisans d'art",
-      icon: urls.urlImagesServer + "/antibes/ARTISTES_ARTISANS_ART.png",
-      //urlFiches: config.urlImagesServer + "/antibes/ARTISTES_ARTISANS_ART/"
-    },
-    // ... autres couches
-  ],
+  layers: layers,
   mesh3DSources: [
     {
       name: "bati3D_IGO_tileset",
@@ -170,11 +250,7 @@ export const config = {
     },
   },
   cameraCoordinates: {
-    destination: new Cesium.Cartesian3(
-      4605135.76386452,
-      574914.9092524701,
-      4373867.371009422
-    ),
+    destination: new Cesium.Cartesian3(4605135.76386452, 574914.9092524701, 4373867.371009422),
     orientation: {
       heading: 6.283185307179586,
       pitch: -0.7870703161505075,

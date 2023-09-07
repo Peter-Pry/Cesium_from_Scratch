@@ -14,9 +14,7 @@ export function ToolTipMouseHover(viewer) {
   // Ajoute un écouteur d'événements pour le mouvement de la souris sur le canvas du viewer
   viewer.canvas.addEventListener("mousemove", function (e) {
     // Tente de sélectionner une entité sous le curseur de la souris
-    var pickedObject = viewer.scene.pick(
-      new Cesium.Cartesian2(e.clientX, e.clientY)
-    );
+    var pickedObject = viewer.scene.pick(new Cesium.Cartesian2(e.clientX, e.clientY));
 
     // Vérifie si une entité a été sélectionnée et si elle possède un identifiant
     if (Cesium.defined(pickedObject) && Cesium.defined(pickedObject.id)) {
@@ -45,23 +43,13 @@ export function ToolTipMouseHover(viewer) {
  * @param {HTMLElement} customInfoboxElement - L'élément DOM de l'infobox personnalisée.
  * @param {HTMLElement} infoboxContentElement - L'élément DOM du contenu de l'infobox.
  */
-export function addLeftClickHandler(
-  viewer,
-  customInfoboxElement,
-  infoboxContentElement
-) {
+export function addLeftClickHandler(viewer, customInfoboxElement, infoboxContentElement) {
   let firstClickOnMap = false;
   let previousSelectedEntity = null;
 
   // Initialise les écouteurs d'événements
   addSelectedEntityChangedListener(viewer, previousSelectedEntity);
-  addLeftClickListener(
-    viewer,
-    firstClickOnMap,
-    previousSelectedEntity,
-    customInfoboxElement,
-    infoboxContentElement
-  );
+  addLeftClickListener(viewer, firstClickOnMap, previousSelectedEntity, customInfoboxElement, infoboxContentElement);
 }
 
 /**
@@ -71,10 +59,7 @@ export function addLeftClickHandler(
  */
 function addSelectedEntityChangedListener(viewer, previousSelectedEntity) {
   viewer.selectedEntityChanged.addEventListener(function (newEntity) {
-    if (
-      previousSelectedEntity &&
-      previousSelectedEntity.id === "Adresse du point"
-    ) {
+    if (previousSelectedEntity && previousSelectedEntity.id === "Adresse du point") {
       viewer.entities.remove(previousSelectedEntity);
     }
     previousSelectedEntity = newEntity;
@@ -89,22 +74,9 @@ function addSelectedEntityChangedListener(viewer, previousSelectedEntity) {
  * @param {HTMLElement} customInfoboxElement - L'élément DOM de l'infobox personnalisée.
  * @param {HTMLElement} infoboxContentElement - L'élément DOM du contenu de l'infobox.
  */
-function addLeftClickListener(
-  viewer,
-  firstClickOnMap,
-  previousSelectedEntity,
-  customInfoboxElement,
-  infoboxContentElement
-) {
+function addLeftClickListener(viewer, firstClickOnMap, previousSelectedEntity, customInfoboxElement, infoboxContentElement) {
   viewer.screenSpaceEventHandler.setInputAction(function (movement) {
-    handleLeftClick(
-      movement,
-      viewer,
-      firstClickOnMap,
-      previousSelectedEntity,
-      customInfoboxElement,
-      infoboxContentElement
-    )
+    handleLeftClick(movement, viewer, firstClickOnMap, previousSelectedEntity, customInfoboxElement, infoboxContentElement)
       .then((result) => {
         firstClickOnMap = result;
       })
@@ -124,52 +96,27 @@ function addLeftClickListener(
  * @param {HTMLElement} infoboxContentElement - L'élément DOM du contenu de l'infobox.
  * @returns {Promise<Boolean>} - Retourne un booléen indiquant si c'était le premier clic sur la carte.
  */
-async function handleLeftClick(
-  movement,
-  viewer,
-  firstClickOnMap,
-  previousSelectedEntity,
-  customInfoboxElement,
-  infoboxContentElement
-) {
+async function handleLeftClick(movement, viewer, firstClickOnMap, previousSelectedEntity, customInfoboxElement, infoboxContentElement) {
   const pickedObject = viewer.scene.pick(movement.position);
   if (Cesium.defined(pickedObject) && Cesium.defined(pickedObject.id)) {
-    return handleEntityClick(
-      pickedObject.id,
-      viewer,
-      previousSelectedEntity,
-      customInfoboxElement,
-      infoboxContentElement
-    );
+    return handleEntityClick(pickedObject.id, viewer, previousSelectedEntity, customInfoboxElement, infoboxContentElement);
   } else {
     // Supprimez l'entité de recherche si elle existe
     const searchEntity = viewer.entities.getById("SearchAddressEntity");
     if (searchEntity) {
       viewer.entities.remove(searchEntity);
     }
-    return handleMapClick(
-      movement,
-      viewer,
-      firstClickOnMap,
-      customInfoboxElement
-    );
+    return handleMapClick(movement, viewer, firstClickOnMap, customInfoboxElement);
   }
 }
 
-function handleEntityClick(
-  entity,
-  viewer,
-  previousSelectedEntity,
-  customInfoboxElement,
-  infoboxContentElement
-) {
+function handleEntityClick(entity, viewer, previousSelectedEntity, customInfoboxElement, infoboxContentElement) {
   if (previousSelectedEntity === entity) {
     viewer.selectedEntity = undefined;
     customInfoboxElement.style.display = "none";
     previousSelectedEntity = null;
     return false;
   }
-  
 
   const infoboxContentHtml = generateInfoboxContent(entity);
   infoboxContentElement.innerHTML = infoboxContentHtml;
@@ -180,22 +127,14 @@ function handleEntityClick(
   return false;
 }
 
-async function handleMapClick(
-  movement,
-  viewer,
-  firstClickOnMap,
-  customInfoboxElement
-) {
+async function handleMapClick(movement, viewer, firstClickOnMap, customInfoboxElement) {
   const tempEntityExists = viewer.entities.getById("Adresse du point");
   if (tempEntityExists) {
     viewer.entities.remove(tempEntityExists);
   }
 
   if (firstClickOnMap) {
-    const cartesian = viewer.camera.pickEllipsoid(
-      movement.position,
-      viewer.scene.globe.ellipsoid
-    );
+    const cartesian = viewer.camera.pickEllipsoid(movement.position, viewer.scene.globe.ellipsoid);
     if (cartesian) {
       const addressInfo = await getAddressInfoFromCartesian(cartesian);
       createTempEntity(viewer, cartesian, addressInfo);
@@ -248,17 +187,13 @@ function handleTabs() {
       tabButtons.forEach((btn) => btn.classList.remove("active"));
       tabContents.forEach((content) => content.classList.remove("active"));
       e.target.classList.add("active");
-      document
-        .querySelector(`.tab-content.${targetTab}`)
-        .classList.add("active");
+      document.querySelector(`.tab-content.${targetTab}`).classList.add("active");
     });
   });
 }
 
 function closeCustomBox(customInfoboxElement) {
-  customInfoboxElement
-    .querySelector(".close-button")
-    .addEventListener("click", function () {
-      customInfoboxElement.style.display = "none";
-    });
+  customInfoboxElement.querySelector(".close-button").addEventListener("click", function () {
+    customInfoboxElement.style.display = "none";
+  });
 }

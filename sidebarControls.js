@@ -1,8 +1,4 @@
-export function initializeSidebarControls(
-  sidebar,
-  openSidebarButton,
-  closeSidebarButton
-) {
+export function initializeSidebarControls(sidebar, openSidebarButton, closeSidebarButton) {
   closeSidebarButton.addEventListener("click", function () {
     sidebar.style.display = "none";
   });

@@ -40,12 +40,7 @@ export default function addSearchModule(viewer, containerId, options = {}) {
 
   // Fonction pour vérifier si un élément est en dehors de la zone de recherche et du bouton de recherche
   function isOutsideSearchZone(target) {
-    return (
-      target !== addressInput &&
-      target !== searchButton &&
-      target !== geocodingService &&
-      !resultsContainer.contains(target)
-    );
+    return target !== addressInput && target !== searchButton && target !== geocodingService && !resultsContainer.contains(target);
   }
 
   // Gestionnaire d'événements pour le clic en dehors de la zone de recherche
@@ -88,13 +83,7 @@ export default function addSearchModule(viewer, containerId, options = {}) {
    * @param {HTMLInputElement} addressInput - L'élément input pour l'adresse.
    * @param {Object} viewer - L'instance du viewer Cesium.
    */
-  function updateResultsContainer(
-    data,
-    service,
-    resultsContainer,
-    addressInput,
-    viewer
-  ) {
+  function updateResultsContainer(data, service, resultsContainer, addressInput, viewer) {
     resultsContainer.innerHTML = "";
 
     // Déterminez les éléments à afficher en fonction du service utilisé
@@ -127,10 +116,7 @@ export default function addSearchModule(viewer, containerId, options = {}) {
         resultsContainer.innerHTML = ""; // Videz les résultats après la sélection
 
         // Créez une description à partir des données d'adresse
-        const entityDescription = createDescriptionFromAddressData(
-          item,
-          service
-        );
+        const entityDescription = createDescriptionFromAddressData(item, service);
 
         // Déclenchez le déplacement (flyto) vers ces coordonnées
         currentEntity = updateViewerWithCoordinates(
@@ -152,13 +138,7 @@ export default function addSearchModule(viewer, containerId, options = {}) {
 
     if (query.length > 2) {
       const data = await getSearchResults(query, service);
-      updateResultsContainer(
-        data,
-        service,
-        resultsContainer,
-        addressInput,
-        viewer
-      );
+      updateResultsContainer(data, service, resultsContainer, addressInput, viewer);
     } else {
       resultsContainer.innerHTML = "";
     }
@@ -203,12 +183,7 @@ export default function addSearchModule(viewer, containerId, options = {}) {
    * @param {Object} currentEntity - L'entité actuellement affichée.
    * @returns {Object} - La nouvelle entité ajoutée.
    */
-  function updateViewerWithCoordinates(
-    viewer,
-    coordinates,
-    currentEntity,
-    description
-  ) {
+  function updateViewerWithCoordinates(viewer, coordinates, currentEntity, description) {
     // Supprimez l'entité précédente si elle existe
     if (currentEntity) {
       viewer.entities.remove(currentEntity);
@@ -216,11 +191,7 @@ export default function addSearchModule(viewer, containerId, options = {}) {
 
     // Utilisez viewer.camera.flyTo pour déplacer la caméra
     viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(
-        coordinates[0],
-        coordinates[1],
-        1000
-      ),
+      destination: Cesium.Cartesian3.fromDegrees(coordinates[0], coordinates[1], 1000),
       orientation: {
         heading: Cesium.Math.toRadians(0),
         pitch: Cesium.Math.toRadians(-90),
@@ -237,8 +208,8 @@ export default function addSearchModule(viewer, containerId, options = {}) {
         color: Cesium.Color.RED,
       },
       description: description, // Utilisez la description ici
-      name:"Adresse recherchée",
-      id:"SearchAddressEntity",
+      name: "Adresse recherchée",
+      id: "SearchAddressEntity",
     });
   }
 
@@ -257,11 +228,7 @@ export default function addSearchModule(viewer, containerId, options = {}) {
     }
 
     if (coordinates) {
-      currentEntity = updateViewerWithCoordinates(
-        viewer,
-        coordinates,
-        currentEntity
-      );
+      currentEntity = updateViewerWithCoordinates(viewer, coordinates, currentEntity);
     } else {
       console.log("Aucun résultat de géocodage trouvé.");
     }
