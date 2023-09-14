@@ -6,8 +6,11 @@ import { initializeGeoJsonLayers, getLayersFromWorkspace } from "./addGeoJsonDat
 import addImagerySource from "./addImagerySource.js";
 import Add3DTileModels from "./add3DTileModels.js";
 import { ToolTipMouseHover, addLeftClickHandler } from "./mouseControls.js";
-import { generateAndAttachViewButtons } from "./addButtonCenterView.js";
+import { generateAndAttachViewButtons } from "./interfaces/addButtonCenterView.js";
 import { updateEntitiesVerticalPosition } from "./setVerticalPosition.js";
+import { makeInfoboxDraggable } from "./draggableInfosBox.js";
+import { makeInfoboxResizable } from "./resizeInfosBox.js";
+import { addResizeHandles } from "./infoBoxControls.js";
 
 // Initialisation des contrôles de la barre latérale
 // Récupération des éléments du DOM nécessaires
@@ -17,27 +20,29 @@ const openSidebarButton = document.getElementById("open-sidebar-button");
 initializeSidebarControls(sidebar, openSidebarButton, closeSidebarButton);
 
 
+//# Choix du terrain
+// 1 - Terrain fournit par Seb (Attention décalage de niveau)
+const terrainProvider = new Cesium.Terrain(Cesium.CesiumTerrainProvider.fromUrl(config.terrainProviderUrl, { depthTestAgainstTerrain: true }));
 
-const terrainProvider = new Cesium.Terrain(Cesium.CesiumTerrainProvider.fromUrl(config.terrainProviderUrl));
+// 2 - Terrain fournit par IGO
+// const terrainProvider = Cesium.Terrain.fromWorldTerrain({requestWaterMask: true,requestVertexNormals: true,});
 
-// const terrainProvider = await Cesium.GeoserverTerrainProvider({
-//   "url": "https://wxs.ign.fr/inspire/inspire/r/wms",
-//   "layerName": "EL.GridCoverage"
-
-// });
 // Création du viewer Cesium avec les configurations spécifiées
 const viewer = new Cesium.Viewer("cesiumContainer", {
   terrain: terrainProvider,
-  baseLayer: Cesium.ImageryLayer.fromProviderAsync(Cesium.TileMapServiceImageryProvider.fromUrl(Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII"))),
+  baseLayer: Cesium.ImageryLayer.fromProviderAsync(Cesium.TileMapServiceImageryProvider.fromUrl(Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII"))), //Avoir un fond de carte base résolution par défaut
   baseLayerPicker: false,
   geocoder: false,
   animation: false,
   timeline: false,
   useBrowserRecommendedResolution: true,
 });
+//Suppression des Crédit Cesium ION (si nécessaire)
+viewer._cesiumWidget._creditContainer.parentNode.removeChild(viewer._cesiumWidget._creditContainer);
 
 // Positionnement initial de la caméra selon les coordonnées spécifiées dans le fichier de configuration
 viewer.camera.setView(config.cameraCoordinates);
+
 
 // Ajout d'une infobulle qui s'affiche lors du survol d'une entité avec la souris
 ToolTipMouseHover(viewer);
@@ -49,23 +54,15 @@ const infoboxContentElement = document.getElementById("infoboxContent");
 // Initialisation de l'infobox personnalisée avec les éléments récupérés
 addLeftClickHandler(viewer, customInfoboxElement, infoboxContentElement);
 
-//const layers2 = await getLayersFromWorkspace(config.urls.urlGeoserver, "Antibes");
 
 // Initialisation et ajout des couches de données GeoJson au viewer
-initializeGeoJsonLayers(
-  viewer,
-  config.layers,
-  config.urls.urlGeoserver,
-  config.urls.urlImagesServer,
-  "layer-list"
-)
-.then((failedLayers) => {
-    if (failedLayers.length === 0) {
-        console.log("Toutes les couches GeoJson ont été initialisées !");
-    } else {
-        console.log(`Les couches suivantes n'ont pas pu être chargées: \n${failedLayers.join(',\n ')}`);
-    }
-    updateEntitiesVerticalPosition(viewer, 100);
+initializeGeoJsonLayers(viewer, config.layers, config.urls.urlGeoserver, config.urls.urlImagesServer, "layer-list").then((failedLayers) => {
+  if (failedLayers.length === 0) {
+    console.log("Toutes les couches GeoJson ont été initialisées !");
+  } else {
+    console.log(`Les couches suivantes n'ont pas pu être chargées: \n  ${failedLayers.join(",\n  ")}`);
+  }
+  updateEntitiesVerticalPosition(viewer, 100);
 });
 
 // Ajout des imageries au viewer
@@ -79,10 +76,11 @@ const options = {
   geocodingServices: [
     { value: "ban", text: "BAN (Base Adresse Nationale)" },
     { value: "nominatim", text: "Nominatim (OpenStreetMap)" },
+    { value: "ign", text: "IGN Autocomplétion" }, // Ajout du service IGN
   ],
 };
 
-addSearchModule(viewer, "searchBar", options);
+addSearchModule(viewer, "searchBar");
 
 const buttons = generateAndAttachViewButtons(config.views, viewer);
 const container = document.getElementById("views-buttons-container");
@@ -95,3 +93,8 @@ document.getElementById("verticalAmountRange").addEventListener("input", functio
   document.getElementById("rangeValue").textContent = newVerticalAmount; // Mettre à jour le label
   updateEntitiesVerticalPosition(viewer, newVerticalAmount); // Mettre à jour les entités
 });
+
+const infobox = document.querySelector(".custom-infobox");
+// makeInfoboxDraggable(infobox);
+// makeInfoboxResizable(infobox);
+addResizeHandles(infobox);

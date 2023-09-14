@@ -4,8 +4,6 @@ const urls = {
   urlTileSetsServer: "http://localhost:8585/geoserver/www/tilesets",
 };
 
-const urlImagesServer = "https://cesium.smartantibes.ville-antibes.fr/geoserver/www";
-const urlGeoserver = "https://cesium.smartantibes.ville-antibes.fr/geoserver";
 
 
 const layers = [
@@ -116,10 +114,21 @@ const globeOSM = new Cesium.OpenStreetMapImageryProvider({
   url: "https://a.tile.openstreetmap.org/",
 });
 
-//Vue aérienne Antibes 2017 (Geoserver)
+//Vue aérienne Antibes 2017 (Geoserver Seb)
+// const antibes2017Provider = new Cesium.WebMapServiceImageryProvider({
+//   url: "https://sig-test.ville-antibes.fr/geoserver/cesium/wms",
+//   layers: "Antibes_OrthoVraie_LB93_2017_withmask",
+//   enablePickFeatures: false,
+//   parameters: {
+//     format: "image/png",
+//     transparent: "true",
+//   },
+// });
+
+//Vue aérienne Antibes 2017 (Geoserver SmartAntibes)
 const antibes2017Provider = new Cesium.WebMapServiceImageryProvider({
-  url: "https://sig-test.ville-antibes.fr/geoserver/cesium/wms",
-  layers: "Antibes_OrthoVraie_LB93_2017_withmask",
+  url: "https://cesium.smartantibes.ville-antibes.fr/geoserver/wms",
+  layers: "antibes:ANTIBES_ORTHOVRAIE_LB93_2017_WITHMASK",
   enablePickFeatures: false,
   parameters: {
     format: "image/png",
@@ -173,6 +182,7 @@ export const config = {
       provider: IgnProvider,
       labelText: "Vue IGN",
       activeBydefault: true,
+      credit: new Cesium.Credit("IGN", "http://wxs.ign.fr/static/logos/IGN/IGN.gif", "http://www.ign.fr/"),
     },
     {
       name: "antibes2017Provider",
@@ -199,16 +209,46 @@ export const config = {
       url: "https://igoprod.igo.fr/SG/antibes/b3dm/Antibes_BatiGlobal.410970/tileset.json",
       labelText: "Bati3D IGO",
     },
+    // {
+    //   name: "mesh3D_IGO_tileset",
+    //   url: "https://igoprod.igo.fr/SG/antibes/b3dm/AntibesMesh3D/tileset.json",
+    //   labelText: "Mesh3D IGO",
+    // },
+    // {
+    //   name: "mesh3D_SIG_tileset",
+    //   url: "https://cesium-dev.ville-antibes.fr/data2/3dtiles/mesh/pyramid/tileset.json",
+    //   labelText: "Mesh3D SIG Antibes",
+    // },
     {
-      name: "mesh3D_IGO_tileset",
-      url: "https://igoprod.igo.fr/SG/antibes/b3dm/AntibesMesh3D/tileset.json",
-      labelText: "Mesh3D IGO",
+      name: "mesh3D_tileset_localHost",
+      url: "http://localhost:8585/geoserver/www/tileset/antibes_3Dmesh/tileset.json",
+      labelText: "Mesh3D Antibes LocalHost",
     },
     {
-      name: "mesh3D_SIG_tileset",
-      url: "https://cesium-dev.ville-antibes.fr/data2/3dtiles/mesh/pyramid/tileset.json",
-      labelText: "Mesh3D SIG Antibes",
+      name: "mesh3D_tileset_localHost_new_release",
+      url: "http://localhost:8585/geoserver/www/tileset/antibes_3Dmesh_new_release/tileset.json",
+      labelText: "Mesh3D Antibes LocalHost New release",
     },
+    {
+      name: "mesh3D_tileset_localHost_new_release",
+      url: "http://localhost:8585/geoserver/www/tileset/antibes_3Dmesh_new_release_gzip/tileset.json",
+      labelText: "Mesh3D Antibes LocalHost New release Gzip",
+    },
+    {
+      name: "Fort_carre_hd",
+      url: "http://localhost:8585/geoserver/www/tileset/fort_carre/tileset.json",
+      labelText: "Fort carré HD",
+    },
+    // {
+    //   name: "bati_antibes",
+    //   url: "http://localhost:8585/geoserver/www/tileset/antibes_bati/tileset.json",
+    //   labelText: "bati antibes",
+    // },
+    // {
+    //   name: "bati_antibes_new",
+    //   url: "http://localhost:8585/geoserver/www/tileset/antibes_bati_extract_terraExplorer/tileset.json",
+    //   labelText: "bati antibes new",
+    // },
     // {
     //   name: "mesh3D_fort_carre_tileset",
     //   url: urls.urlTileSetsServer+"/fort_carre/tileset.json",

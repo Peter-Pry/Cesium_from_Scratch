@@ -1,3 +1,5 @@
+import { CapitalizeFirstLetterOfEachWord } from "./utils.js";
+
 /**
  * Fonction pour ajouter un module de recherche d'adresse avec des options de géocodage configurables.
  * @param {Object} viewer - L'instance du viewer Cesium.
@@ -23,6 +25,8 @@ export default function addSearchModule(viewer, containerId, options = {}) {
   const geocodingServices = options.geocodingServices || [
     { value: "ban", text: "BAN (Base Adresse Nationale)" },
     { value: "nominatim", text: "Nominatim (OpenStreetMap)" },
+    { value: "ign", text: "IGN Autocomplétion" }, // Ajout du service IGN AutoComplétion
+    //{ value: "ign_search", text: "IGN Classique Search" },
   ];
 
   geocodingServices.forEach((service) => {
@@ -67,6 +71,10 @@ export default function addSearchModule(viewer, containerId, options = {}) {
       url = `https://api-adresse.data.gouv.fr/search/?q=${query}&limit=5`;
     } else if (service === "nominatim") {
       url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=5`;
+    } else if (service === "ign") {
+      url = `https://wxs.ign.fr/essentiels/geoportail/geocodage/rest/0.1/completion?text=${query}&terr=06&maximumResponses=5`; // URL du service IGN
+    } else if (service === "ign_search") {
+      url = `https://wxs.ign.fr/essentiels/geoportail/geocodage/rest/0.1/search?q=${query}&index=poi,address&limit=5&city=antibes`;
     }
 
     const response = await fetch(url);
@@ -92,6 +100,10 @@ export default function addSearchModule(viewer, containerId, options = {}) {
       items = data.features;
     } else if (service === "nominatim") {
       items = data;
+    } else if (service === "ign") {
+      items = data.results; // Traitement des résultats IGN
+    } else if (service === "ign_search") {
+      items = data.features; // Traitement des résultats IGN
     }
 
     items.forEach((item) => {
@@ -106,6 +118,14 @@ export default function addSearchModule(viewer, containerId, options = {}) {
       } else if (service === "nominatim") {
         label = item.display_name;
         coordinates = [parseFloat(item.lon), parseFloat(item.lat)];
+      } else if (service === "ign") {
+        label = CapitalizeFirstLetterOfEachWord(item.fulltext); // Utilisez la propriété "fulltext" pour le label
+        //label = item.fulltext; // Utilisez la propriété "fulltext" pour le label
+        coordinates = [item.x, item.y]; // Utilisez les propriétés "x" et "y" pour les coordonnées
+      } else if (service === "ign_search") {
+        label = item.label; // Utilisez la propriété "fulltext" pour le label
+        //label = item.fulltext; // Utilisez la propriété "fulltext" pour le label
+        coordinates = [item.x, item.y]; // Utilisez les propriétés "x" et "y" pour les coordonnées
       }
 
       resultItem.textContent = label;

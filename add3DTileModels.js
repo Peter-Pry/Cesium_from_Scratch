@@ -11,7 +11,7 @@ function Add3DTileModels(viewer, primitivesSources, parentId) {
 
   // Parcourir chaque contrôle pour ajouter le modèle 3D Tile correspondant
   primitivesSources.forEach((control) => {
-    const { name, provider, labelText, url } = control;
+    const { name, provider, labelText, url, options } = control;
     const listItem = document.createElement("li");
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";

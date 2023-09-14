@@ -8,18 +8,23 @@
 export function getReverseGeocoding(latitude, longitude) {
   return new Promise((resolve, reject) => {
     // Construction de l'URL pour le service de géocodage inverse de Nominatim
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
+    //const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
+    const url = `https://wxs.ign.fr/essentiels/geoportail/geocodage/rest/0.1/reverse?lat=${latitude}&lon=${longitude}&limit=1`;
 
     // Effectue une requête au service de géocodage inverse
     fetch(url)
-      .then((response) => response.json())
+      .then((response) => {
+        return response.json()
+      })
       .then((data) => {
+        console.log(data);
         // Vérifie si une adresse a été trouvée
-        if (data && data.display_name) {
-          const address = data.address;
+        if (data && data.features[0]) {
+          const address = data.features[0].properties;
           // Construction de la description de l'adresse
-          let description = `<strong>Adresse :</strong> ${data.display_name}<br>`;
-          if (address.road) description += `<strong>Rue :</strong> ${address.road}<br>`;
+          let description = `<strong>Adresse complète :</strong> ${address.label}<br>`;
+          if (address.housenumber) description += `<strong>Numéro :</strong> ${address.housenumber}<br>`;
+          if (address.street) description += `<strong>Rue :</strong> ${address.street}<br>`;
           if (address.city) description += `<strong>Ville :</strong> ${address.city}<br>`;
           if (address.postcode) description += `<strong>Code postal :</strong> ${address.postcode}<br>`;
           if (address.country) description += `<strong>Pays :</strong> ${address.country}<br>`;

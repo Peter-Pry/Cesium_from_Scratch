@@ -45,7 +45,6 @@ export function generateTabbedDescriptionForEntity(descriptionContent, codeConte
   `;
 }
 
-
 export function checkUrlAccessibility(url) {
   return fetch(url, {
     method: "HEAD",
@@ -61,4 +60,14 @@ export function checkUrlAccessibility(url) {
     .catch((error) => {
       return false; // En cas d'erreur, renvoie false
     });
+}
+
+export function CapitalizeFirstLetterOfEachWord(sentence) {
+  const words = sentence.split(" ");
+
+  return words
+    .map((word) => {
+      return word[0].toUpperCase() + word.substring(1);
+    })
+    .join(" ");
 }

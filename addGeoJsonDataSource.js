@@ -216,7 +216,7 @@ export function initializeGeoJsonLayers(viewer, layers, baseUrlGeoServer, baseUr
         }
       });
 
-      console.log(validResults);
+      //console.log(validResults);
       // Groupez les couches par catégorie
       const groupedByCategory = validResults.reduce((acc, curr) => {
         const category = curr.categorie || "Autres POI";
