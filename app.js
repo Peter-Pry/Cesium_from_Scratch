@@ -10,7 +10,7 @@ import { initializeGeoJsonLayers, getLayersFromWorkspace } from "./layers/GeoJso
 import addSearchModule from "./features/addressSearchModule.js";
 
 //Importation des fonctions pour ajouter des contrôles à l'application
-import { initializeSidebarControls } from "./controls/sidebarControls.js";
+import { setSidebarOpenable } from "./interfaces/setSidebarOpenable.js";
 import { ToolTipMouseHover, addLeftClickHandler } from "./controls/mouseControls.js";
 
 //Importation des fonctions pour ajouter des élèments d'interfaces
@@ -20,14 +20,12 @@ import { addResizeHandles } from "./interfaces/setInfoBoxResize.js";
 import { setInfoboxDraggable } from "./interfaces/setInfoboxDraggable.js";
 import { setInfoboxResizable } from "./interfaces/setInfoboxResizable.js";
 
-
 // Initialisation des contrôles de la barre latérale
 // Récupération des éléments du DOM nécessaires
 const sidebar = document.getElementById("sidebar");
 const closeSidebarButton = document.getElementById("close-sidebar-button");
 const openSidebarButton = document.getElementById("open-sidebar-button");
-initializeSidebarControls(sidebar, openSidebarButton, closeSidebarButton);
-
+setSidebarOpenable(sidebar, openSidebarButton, closeSidebarButton);
 
 //# Choix du terrain
 // 1 - Terrain fournit par Seb (Attention décalage de niveau)
@@ -52,7 +50,6 @@ viewer._cesiumWidget._creditContainer.parentNode.removeChild(viewer._cesiumWidge
 // Positionnement initial de la caméra selon les coordonnées spécifiées dans le fichier de configuration
 viewer.camera.setView(config.cameraCoordinates);
 
-
 // Ajout d'une infobulle qui s'affiche lors du survol d'une entité avec la souris
 ToolTipMouseHover(viewer);
 
@@ -62,7 +59,6 @@ const customInfoboxElement = document.getElementById("customInfobox");
 const infoboxContentElement = document.getElementById("infoboxContent");
 // Initialisation de l'infobox personnalisée avec les éléments récupérés
 addLeftClickHandler(viewer, customInfoboxElement, infoboxContentElement);
-
 
 // Initialisation et ajout des couches de données GeoJson au viewer
 initializeGeoJsonLayers(viewer, config.layers, config.urls.urlGeoserver, config.urls.urlImagesServer, "layer-list").then((failedLayers) => {
