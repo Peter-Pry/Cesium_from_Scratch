@@ -1,4 +1,4 @@
-export function makeInfoboxResizable(infoboxElement) {
+export function setInfoboxResizable(infoboxElement) {
   let isResizing = false;
   let startWidth, startHeight, startX, startY;
 

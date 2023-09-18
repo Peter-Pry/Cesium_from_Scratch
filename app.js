@@ -1,16 +1,25 @@
-// Importation des modules nécessaires
+// Importation de la configuration
 import { config } from "./config.js";
-import addSearchModule from "./addressSearchModule.js";
-import { initializeSidebarControls } from "./sidebarControls.js";
-import { initializeGeoJsonLayers, getLayersFromWorkspace } from "./addGeoJsonDataSource.js";
-import addImagerySource from "./addImagerySource.js";
-import Add3DTileModels from "./add3DTileModels.js";
-import { ToolTipMouseHover, addLeftClickHandler } from "./mouseControls.js";
+
+//Importation des fonctions pour ajouter des couches
+import addImagerySource from "./layers/ImagerySource.js";
+import { add3DModelsTiles } from "./layers/3DModelsTiles.js";
+import { initializeGeoJsonLayers, getLayersFromWorkspace } from "./layers/GeoJsonDataSource.js";
+
+//Importation pour ajouter des fonctionnalités
+import addSearchModule from "./features/addressSearchModule.js";
+
+//Importation des fonctions pour ajouter des contrôles à l'application
+import { initializeSidebarControls } from "./controls/sidebarControls.js";
+import { ToolTipMouseHover, addLeftClickHandler } from "./controls/mouseControls.js";
+
+//Importation des fonctions pour ajouter des élèments d'interfaces
+import { updateEntitiesVerticalPosition } from "./interfaces/setImageEntityVerticalPosition.js";
 import { generateAndAttachViewButtons } from "./interfaces/addButtonCenterView.js";
-import { updateEntitiesVerticalPosition } from "./setVerticalPosition.js";
-import { makeInfoboxDraggable } from "./draggableInfosBox.js";
-import { makeInfoboxResizable } from "./resizeInfosBox.js";
-import { addResizeHandles } from "./infoBoxControls.js";
+import { addResizeHandles } from "./interfaces/setInfoBoxResize.js";
+import { setInfoboxDraggable } from "./interfaces/setInfoboxDraggable.js";
+import { setInfoboxResizable } from "./interfaces/setInfoboxResizable.js";
+
 
 // Initialisation des contrôles de la barre latérale
 // Récupération des éléments du DOM nécessaires
@@ -69,7 +78,7 @@ initializeGeoJsonLayers(viewer, config.layers, config.urls.urlGeoserver, config.
 addImagerySource(viewer, config.imageryLayersControls, "imageryLayers-list");
 
 // Ajout des modèles 3D au viewer
-Add3DTileModels(viewer, config.mesh3DSources, "primitives-list");
+add3DModelsTiles(viewer, config.mesh3DSources, "primitives-list");
 
 // Initialisation et ajout du module de recherche d'adresse au viewer
 const options = {

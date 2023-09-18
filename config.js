@@ -10,9 +10,9 @@ const layers = [
   {
     name: "antibes:AIRES_DE_JEUX",
     labelText: "Aires de jeux",
-    //icon: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX/AIRES_DE_JEUX.png",
+    icon: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX/AIRES_DE_JEUX.png",
     urlFiches: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX/",
-    markerSymbol: "city",
+    //markerSymbol: "city",
   },
   {
     name: "antibes:CENTRE_DE_LOISIRS",
@@ -46,7 +46,6 @@ const layers = [
     labelText: "Écoles privées",
     categorie: "Education",
     icon: urls.urlImagesServer + "/antibes/ECOLES_PRIVEES/ECOLES_PRIVEES.png",
-    //iconByServer: true,
     urlFiches: urls.urlImagesServer + "/antibes/ECOLES_PRIVEES/",
   },
   {
@@ -115,20 +114,9 @@ const globeOSM = new Cesium.OpenStreetMapImageryProvider({
 });
 
 //Vue aérienne Antibes 2017 (Geoserver Seb)
-// const antibes2017Provider = new Cesium.WebMapServiceImageryProvider({
-//   url: "https://sig-test.ville-antibes.fr/geoserver/cesium/wms",
-//   layers: "Antibes_OrthoVraie_LB93_2017_withmask",
-//   enablePickFeatures: false,
-//   parameters: {
-//     format: "image/png",
-//     transparent: "true",
-//   },
-// });
-
-//Vue aérienne Antibes 2017 (Geoserver SmartAntibes)
 const antibes2017Provider = new Cesium.WebMapServiceImageryProvider({
-  url: "https://cesium.smartantibes.ville-antibes.fr/geoserver/wms",
-  layers: "antibes:ANTIBES_ORTHOVRAIE_LB93_2017_WITHMASK",
+  url: "https://sig-test.ville-antibes.fr/geoserver/cesium/wms",
+  layers: "Antibes_OrthoVraie_LB93_2017_withmask",
   enablePickFeatures: false,
   parameters: {
     format: "image/png",
@@ -136,9 +124,11 @@ const antibes2017Provider = new Cesium.WebMapServiceImageryProvider({
   },
 });
 
+//Vue aérienne Antibes 2017 (Geoserver SmartAntibes)
+//TODO : problème de résolution à l'affichage. L'imagery est trop volumineuse pour être affichée.
 // const antibes2017Provider = new Cesium.WebMapServiceImageryProvider({
-//   url: "http://localhost:8585/geoserver/wms",
-//   layers: "map:TIF_LB93",
+//   url: "https://cesium.smartantibes.ville-antibes.fr/geoserver/wms",
+//   layers: "antibes:ANTIBES_ORTHOVRAIE_LB93_2017_WITHMASK",
 //   enablePickFeatures: false,
 //   parameters: {
 //     format: "image/png",
@@ -190,7 +180,7 @@ export const config = {
       labelText: "Vue aérienne Antibes 2017 (SIG Antibes)",
       activeBydefault: true,
     },
-    { name: "globeOSM", provider: globeOSM, labelText: "Globe OpenStreetMap" },
+    //{ name: "globeOSM", provider: globeOSM, labelText: "Globe OpenStreetMap" },
     {
       name: "igo2017Provider",
       provider: globeIGOProvider,
@@ -224,16 +214,16 @@ export const config = {
       url: "http://localhost:8585/geoserver/www/tileset/antibes_3Dmesh/tileset.json",
       labelText: "Mesh3D Antibes LocalHost",
     },
-    {
-      name: "mesh3D_tileset_localHost_new_release",
-      url: "http://localhost:8585/geoserver/www/tileset/antibes_3Dmesh_new_release/tileset.json",
-      labelText: "Mesh3D Antibes LocalHost New release",
-    },
-    {
-      name: "mesh3D_tileset_localHost_new_release",
-      url: "http://localhost:8585/geoserver/www/tileset/antibes_3Dmesh_new_release_gzip/tileset.json",
-      labelText: "Mesh3D Antibes LocalHost New release Gzip",
-    },
+    // {
+    //   name: "mesh3D_tileset_localHost_new_release",
+    //   url: "http://localhost:8585/geoserver/www/tileset/antibes_3Dmesh_new_release/tileset.json",
+    //   labelText: "Mesh3D Antibes LocalHost New release",
+    // },
+    // {
+    //   name: "mesh3D_tileset_localHost_new_release",
+    //   url: "http://localhost:8585/geoserver/www/tileset/antibes_3Dmesh_new_release_gzip/tileset.json",
+    //   labelText: "Mesh3D Antibes LocalHost New release Gzip",
+    // },
     {
       name: "Fort_carre_hd",
       url: "http://localhost:8585/geoserver/www/tileset/fort_carre/tileset.json",

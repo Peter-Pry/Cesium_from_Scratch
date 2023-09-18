@@ -1,4 +1,4 @@
-export function makeInfoboxDraggable(infoboxElement) {
+export function setInfoboxDraggable(infoboxElement) {
   let isDragging = false;
   let offsetX, offsetY;
 

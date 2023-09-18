@@ -1,4 +1,4 @@
-import { getReverseGeocoding } from "./reverseGeocoding.js";
+import { getReverseGeocoding } from "../features/reverseGeocodingModule.js";
 //import { generateInfoboxContent, handleTabs, closeCustomBox } from "./infoBoxGenerator.js";
 
 /**
@@ -59,7 +59,7 @@ export function addLeftClickHandler(viewer, customInfoboxElement, infoboxContent
  */
 function addSelectedEntityChangedListener(viewer, previousSelectedEntity) {
   viewer.selectedEntityChanged.addEventListener(function (newEntity) {
-    if (previousSelectedEntity && previousSelectedEntity.id === "Adresse du point") {
+    if (previousSelectedEntity && previousSelectedEntity.id === "Adresse") {
       viewer.entities.remove(previousSelectedEntity);
     }
     previousSelectedEntity = newEntity;
@@ -128,7 +128,7 @@ function handleEntityClick(entity, viewer, previousSelectedEntity, customInfobox
 }
 
 async function handleMapClick(movement, viewer, firstClickOnMap, customInfoboxElement) {
-  const tempEntityExists = viewer.entities.getById("Adresse du point");
+  const tempEntityExists = viewer.entities.getById("Adresse");
   if (tempEntityExists) {
     viewer.entities.remove(tempEntityExists);
   }
@@ -156,7 +156,7 @@ async function getAddressInfoFromCartesian(cartesian) {
 
 function createTempEntity(viewer, cartesian, addressInfo) {
   const tempEntity = new Cesium.Entity({
-    id: "Adresse du point",
+    id: "Adresse",
     position: cartesian,
     description: addressInfo,
     point: {
@@ -172,7 +172,7 @@ function createTempEntity(viewer, cartesian, addressInfo) {
 
 function generateInfoboxContent(entity) {
   return `
-      <h3>${entity.name}</h3>
+      <h3>Adresse selectionnée</h3>
       <p>${entity.description}</p>
   `;
 }

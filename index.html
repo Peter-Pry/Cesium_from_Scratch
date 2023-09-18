@@ -6,7 +6,7 @@
 
     <!-- Stylesheets -->
     <link href="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./css/style.css">
 
     <!-- Scripts -->
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Cesium.js"></script>
@@ -39,9 +39,14 @@
         <section>
             <h3>Vues</h3>
             <div id="views-buttons-container"></div>
+            
+        </section>
+
+        <section>
+            <h3>Affichage</h3>
             <div>
+                <label for="verticalAmountRange">Hauteur des icônes :<span id="rangeValue">100</span></label><br>
                 <input type="range" id="verticalAmountRange" min="0" max="100" step="10" value="100">
-                <label for="verticalAmountRange">Vertical Amount: <span id="rangeValue">100</span></label>
             </div>
         </section>
 
@@ -65,8 +70,8 @@
     </aside>
 
     <!-- Main Script -->
-    <script src="GeoserverTerrainProvider.js"></script>
-    <script type="module" src="main.js" async></script>
+    <script src="./layers/GeoserverTerrainProvider.js"></script>
+    <script type="module" src="app.js" async></script>
 </body>
 
 </html>

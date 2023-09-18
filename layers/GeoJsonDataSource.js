@@ -1,5 +1,6 @@
-import { getEntityName, generateTabbedDescriptionForEntity } from "./utils.js";
-import { setVerticalPosition } from "./setVerticalPosition.js";
+import { getEntityName } from "../utils/getEntityName.js";
+import { generateTabbedDescriptionForEntity } from "../interfaces/generateTabbedDescriptionForEntity.js";
+import { setVerticalPosition } from "../interfaces/setImageEntityVerticalPosition.js";
 
 export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServer, layerGeoJsonName, options = {}) {
   const defaultOptions = {

@@ -5,7 +5,7 @@
  * @param {string} parentId - ID de l'élément parent où ajouter les éléments de contrôle.
  * @returns {Object} - Un objet contenant les modèles 3D Tile ajoutés.
  */
-function Add3DTileModels(viewer, primitivesSources, parentId) {
+export function add3DModelsTiles(viewer, primitivesSources, parentId) {
   // Objet pour stocker les modèles 3D Tile ajoutés
   const addPrimitivesLayers = {};
 
@@ -49,5 +49,32 @@ function Add3DTileModels(viewer, primitivesSources, parentId) {
   return addPrimitivesLayers;
 }
 
-// Exporter la fonction pour une utilisation externe
-export default Add3DTileModels;
+
+/**
+ * DRAFT concernant l'ajout de la couche Bâti 3D que l'on possède à la mairie. 
+ */
+
+// Ne fonctionne pas en l'état car la couche a un problème de rendu, les batiments sont semi-transparents.
+
+//TODO : Vérifier l'export de terraExplorer, Chercher cause de la transparence, tester d'autres solutions pour rendre la couche opaque
+
+// const tileset = await Cesium.Cesium3DTileset.fromUrl("http://localhost:8585/geoserver/www/tileset/antibes_bati_extract_terraExplorer/tileset.json", {
+//   colorBlendAmount: 0, // Essayez de définir ceci à 0
+//   colorBlendMode: Cesium.ColorBlendMode.REPLACE, // Ajoutez ceci
+// });
+
+//const tileset = await Cesium.Cesium3DTileset.fromUrl("http://localhost:8585/geoserver/www/tileset/antibes_zone1/tileset.json", {
+  //colorBlendAmount: 0, // Essayez de définir ceci à 0
+  //colorBlendMode: Cesium.ColorBlendMode.REPLACE, // Ajoutez ceci
+//});
+
+// const heightOffset = -50.0;
+// const boundingSphere = tileset.boundingSphere;
+// const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
+// const surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
+// const offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
+// const translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
+
+// tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+
+//viewer.scene.primitives.add(tileset);

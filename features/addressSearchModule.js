@@ -1,4 +1,4 @@
-import { CapitalizeFirstLetterOfEachWord } from "./utils.js";
+import { capitalizeFirstLetterOfEachWord } from "../utils/capitalizeFirstLetterOfEachWord.js";
 
 /**
  * Fonction pour ajouter un module de recherche d'adresse avec des options de géocodage configurables.
@@ -119,7 +119,7 @@ export default function addSearchModule(viewer, containerId, options = {}) {
         label = item.display_name;
         coordinates = [parseFloat(item.lon), parseFloat(item.lat)];
       } else if (service === "ign") {
-        label = CapitalizeFirstLetterOfEachWord(item.fulltext); // Utilisez la propriété "fulltext" pour le label
+        label = capitalizeFirstLetterOfEachWord(item.fulltext); // Utilisez la propriété "fulltext" pour le label
         //label = item.fulltext; // Utilisez la propriété "fulltext" pour le label
         coordinates = [item.x, item.y]; // Utilisez les propriétés "x" et "y" pour les coordonnées
       } else if (service === "ign_search") {
