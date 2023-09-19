@@ -4,14 +4,13 @@ const urls = {
   urlTileSetsServer: "http://localhost:8585/geoserver/www/tilesets",
 };
 
-
-
 const layers = [
   {
     name: "antibes:AIRES_DE_JEUX",
     labelText: "Aires de jeux",
     icon: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX/AIRES_DE_JEUX.png",
     urlFiches: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX/",
+    formatFiches: ".JPG",
     //markerSymbol: "city",
   },
   {
@@ -19,6 +18,7 @@ const layers = [
     labelText: "Centre de loisirs",
     icon: urls.urlImagesServer + "/antibes/CENTRE_DE_LOISIRS/CENTRE_DE_LOISIRS.png",
     urlFiches: urls.urlImagesServer + "/antibes/CENTRE_DE_LOISIRS/",
+    formatFiches: ".JPG",
   },
   {
     name: "antibes:COLLEGES",
@@ -26,6 +26,7 @@ const layers = [
     categorie: "Education",
     icon: urls.urlImagesServer + "/antibes/COLLEGES/COLLEGES.png",
     urlFiches: urls.urlImagesServer + "/antibes/COLLEGES/",
+    formatFiches: ".JPG",
   },
   {
     name: "antibes:ECOLES_ELEMENTAIRES",
@@ -33,6 +34,7 @@ const layers = [
     categorie: "Education",
     icon: urls.urlImagesServer + "/antibes/ECOLES_ELEMENTAIRES/ECOLES_ELEMENTAIRES.png",
     urlFiches: urls.urlImagesServer + "/antibes/ECOLES_ELEMENTAIRES/",
+    formatFiches: ".JPG",
   },
   {
     name: "antibes:ECOLES_MATERNELLES",
@@ -40,6 +42,7 @@ const layers = [
     categorie: "Education",
     icon: urls.urlImagesServer + "/antibes/ECOLES_MATERNELLES/ECOLES_MATERNELLES.png",
     urlFiches: urls.urlImagesServer + "/antibes/ECOLES_MATERNELLES/",
+    formatFiches: ".JPG",
   },
   {
     name: "antibes:ECOLES_PRIVEES",
@@ -47,6 +50,7 @@ const layers = [
     categorie: "Education",
     icon: urls.urlImagesServer + "/antibes/ECOLES_PRIVEES/ECOLES_PRIVEES.png",
     urlFiches: urls.urlImagesServer + "/antibes/ECOLES_PRIVEES/",
+    formatFiches: ".JPG",
   },
   {
     name: "antibes:EQUIPEMENTS_CULTURELS_ART_URBAIN",
@@ -54,12 +58,14 @@ const layers = [
     categorie: "Culture",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ART_URBAIN/EQUIPEMENTS_CULTURELS_ART_URBAIN.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ART_URBAIN/",
+    formatFiches: ".JPG",
   },
   {
     name: "antibes:EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS",
     labelText: "Établissement culturels",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS/EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS/",
+    formatFiches: ".JPG",
     uniqueIcon: true,
   },
   {
@@ -67,6 +73,7 @@ const layers = [
     labelText: "Patrimoine",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE/EQUIPEMENTS_CULTURELS_PATRIMOINE.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE/",
+    formatFiches: ".JPG",
     uniqueIcon: true,
   },
   {
@@ -74,12 +81,14 @@ const layers = [
     labelText: "Patrimoine durable",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE/EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE/",
+    formatFiches: ".JPG",
   },
   {
     name: "antibes:EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT",
     labelText: "Sculpture à ciel ouvert",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT/EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT/",
+    formatFiches: ".JPG",
     uniqueIcon: true,
   },
   {
@@ -87,24 +96,28 @@ const layers = [
     labelText: "Jardins partagés",
     icon: urls.urlImagesServer + "/antibes/JARDINS_PARTAGES/JARDINS_PARTAGES.png",
     urlFiches: urls.urlImagesServer + "/antibes/JARDINS_PARTAGES/",
+    formatFiches: ".JPG",
   },
   {
     name: "antibes:LIEUX_ACCUEIL_ENFANTS_PARENTS",
     labelText: "Lieux accueil enfants-parents",
     icon: urls.urlImagesServer + "/antibes/LIEUX_ACCUEIL_ENFANTS_PARENTS/LIEUX_ACCUEIL_ENFANTS_PARENTS.png",
     urlFiches: urls.urlImagesServer + "/antibes/LIEUX_ACCUEIL_ENFANTS_PARENTS/",
+    formatFiches: ".JPG",
   },
   {
     name: "antibes:LUDOTHEQUES",
     labelText: "Ludothèques",
     icon: urls.urlImagesServer + "/antibes/LUDOTHEQUES/LUDOTHEQUES.png",
     urlFiches: urls.urlImagesServer + "/antibes/LUDOTHEQUES/",
+    formatFiches: ".JPG",
   },
   {
     name: "antibes:EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS",
     labelText: "Artistes et Artisans d'art",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS/EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS/",
+    formatFiches: ".JPG",
   },
 ];
 
@@ -141,6 +154,10 @@ const globeIGOProvider = new Cesium.WebMapServiceImageryProvider({
   url: "https://igoprod.igo.fr/SG/Antibes/Imagery",
   layers: "Antibes_Globe.mpt",
   enablePickFeatures: false,
+  parameters: {
+    format: "image/png",
+    transparent: "true",
+  },
 });
 
 // Source Vue aérienne IGN

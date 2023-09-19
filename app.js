@@ -4,7 +4,7 @@ import { config } from "./config.js";
 //Importation des fonctions pour ajouter des couches
 import addImagerySource from "./layers/ImagerySource.js";
 import { add3DModelsTiles } from "./layers/3DModelsTiles.js";
-import { initializeGeoJsonLayers, getLayersFromWorkspace } from "./layers/GeoJsonDataSource.js";
+import { initializeLayers, getLayersFromWorkspace } from "./layers/LayerDataSource.js";
 
 //Importation pour ajouter des fonctionnalités
 import addSearchModule from "./features/addressSearchModule.js";
@@ -16,9 +16,9 @@ import { ToolTipMouseHover, addLeftClickHandler } from "./controls/mouseControls
 //Importation des fonctions pour ajouter des élèments d'interfaces
 import { updateEntitiesVerticalPosition } from "./interfaces/setImageEntityVerticalPosition.js";
 import { generateAndAttachViewButtons } from "./interfaces/addButtonCenterView.js";
-import { addResizeHandles } from "./interfaces/setInfoBoxResize.js";
-import { setInfoboxDraggable } from "./interfaces/setInfoboxDraggable.js";
-import { setInfoboxResizable } from "./interfaces/setInfoboxResizable.js";
+//import { addResizeHandles } from "./interfaces/setInfoBoxResize.js";
+//import { setInfoboxDraggable } from "./interfaces/setInfoboxDraggable.js";
+//import { setInfoboxResizable } from "./interfaces/setInfoboxResizable.js";
 
 // Initialisation des contrôles de la barre latérale
 // Récupération des éléments du DOM nécessaires
@@ -61,7 +61,7 @@ const infoboxContentElement = document.getElementById("infoboxContent");
 addLeftClickHandler(viewer, customInfoboxElement, infoboxContentElement);
 
 // Initialisation et ajout des couches de données GeoJson au viewer
-initializeGeoJsonLayers(viewer, config.layers, config.urls.urlGeoserver, config.urls.urlImagesServer, "layer-list").then((failedLayers) => {
+initializeLayers(viewer, config.layers, config.urls.urlGeoserver, config.urls.urlImagesServer, "layer-list").then((failedLayers) => {
   if (failedLayers.length === 0) {
     console.log("Toutes les couches GeoJson ont été initialisées !");
   } else {
@@ -77,29 +77,23 @@ addImagerySource(viewer, config.imageryLayersControls, "imageryLayers-list");
 add3DModelsTiles(viewer, config.mesh3DSources, "primitives-list");
 
 // Initialisation et ajout du module de recherche d'adresse au viewer
-const options = {
-  geocodingServices: [
-    { value: "ban", text: "BAN (Base Adresse Nationale)" },
-    { value: "nominatim", text: "Nominatim (OpenStreetMap)" },
-    { value: "ign", text: "IGN Autocomplétion" }, // Ajout du service IGN
-  ],
-};
-
 addSearchModule(viewer, "searchBar");
 
+
+//Intialisation des boutons pours les vues
 const buttons = generateAndAttachViewButtons(config.views, viewer);
 const container = document.getElementById("views-buttons-container");
-
 buttons.forEach((button) => container.appendChild(button));
 
-// Écouteur d'événements pour l'input range
+// Écouteur d'événements pour l'input range pour modifier la hauteur des icônes
 document.getElementById("verticalAmountRange").addEventListener("input", function (event) {
   const newVerticalAmount = parseFloat(event.target.value);
   document.getElementById("rangeValue").textContent = newVerticalAmount; // Mettre à jour le label
   updateEntitiesVerticalPosition(viewer, newVerticalAmount); // Mettre à jour les entités
 });
 
+// Ajout de 
 const infobox = document.querySelector(".custom-infobox");
 // makeInfoboxDraggable(infobox);
 // makeInfoboxResizable(infobox);
-addResizeHandles(infobox);
+//addResizeHandles(infobox);

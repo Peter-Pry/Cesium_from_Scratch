@@ -2,9 +2,9 @@ import { getEntityName } from "../utils/getEntityName.js";
 import { generateTabbedDescriptionForEntity } from "../interfaces/generateTabbedDescriptionForEntity.js";
 import { setVerticalPosition } from "../interfaces/setImageEntityVerticalPosition.js";
 
-export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServer, layerGeoJsonName, options = {}) {
+export function addDataSource(viewer, baseUrlGeoServer, baseUrlImageServer, layerName, options = {}) {
   const defaultOptions = {
-    urlGeoJsonDataSource: baseUrlGeoServer + "/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=" + layerGeoJsonName + "&outputFormat=application/json",
+    urlDataSource: baseUrlGeoServer + "/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=" + layerName + "&outputFormat=application/json",
     markerSymbol: "marker",
     distanceDisplayCondition: new Cesium.DistanceDisplayCondition(1.0, 400000.0),
     distanceDisplayConditionLabel: new Cesium.DistanceDisplayCondition(1.0, 400000.0),
@@ -18,7 +18,6 @@ export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServe
   const {
     markerSymbol,
     icon,
-    categorieLabelText,
     distanceDisplayCondition,
     distanceDisplayConditionLabel,
     markerSize,
@@ -26,15 +25,15 @@ export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServe
     billboardHeight,
     labelFont,
     labelPixelOffset,
-    urlGeoJsonDataSource,
+    urlDataSource,
     urlFiches,
+    formatFiches,
     uniqueIcon,
-    iconByServer,
   } = { ...defaultOptions, ...options };
 
   return new Promise((resolve, reject) => {
     try {
-      const promise = Cesium.GeoJsonDataSource.load(urlGeoJsonDataSource, {
+      const promise = Cesium.GeoJsonDataSource.load(urlDataSource, {
         markerSize: markerSize,
         markerSymbol: markerSymbol,
       });
@@ -44,7 +43,7 @@ export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServe
           // Get the array of entities
           const entities = dataSource.entities.values;
 
-          const baseUrlFiches = baseUrlImageServer + "/" + layerGeoJsonName.split(":")[0] + "/" + layerGeoJsonName.split(":")[1];
+          //const baseUrlFiches = baseUrlImageServer + "/" + layerGeoJsonName.split(":")[0] + "/" + layerGeoJsonName.split(":")[1];
 
           //console.log(icon);
           // Display the entity icon
@@ -55,7 +54,7 @@ export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServe
             iconDataSource = icon;
           } else if (iconByServer) {
             // Si urlBillboardImage n'est pas fourni, utilisez l'icône par défaut de GeoServer
-            const legendGraphicUrl = `${baseUrlGeoServer}/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=${layerGeoJsonName}`;
+            const legendGraphicUrl = `${baseUrlGeoServer}/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=${layerName}`;
             iconDataSource = legendGraphicUrl;
           } else {
             iconDataSource = Cesium.buildModuleUrl("Assets/Textures/maki/" + markerSymbol + ".png");
@@ -66,7 +65,7 @@ export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServe
             const entity = entities[i];
 
             // Définir les propriétés layerName et id pour l'entité
-            entity.properties.layerName = layerGeoJsonName.split(":")[1]; // Supposons que layerGeoJsonData soit de la forme "Antibes:COLLEGES", le layername sera COLLEGES
+            entity.properties.layerName = layerName.split(":")[1]; // Supposons que layerGeoJsonData soit de la forme "Antibes:COLLEGES", le layername sera COLLEGES
 
             //Récupérer l'id de l'entité depuis la couche de donénes
             entity.properties.id = entity.properties._id;
@@ -76,7 +75,7 @@ export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServe
 
             // Display the entity icon
             if (uniqueIcon && icon) {
-              const urlUniqueIcon = baseUrlImageServer + "/" + layerGeoJsonName.split(":")[0] + "/" + layerGeoJsonName.split(":")[1] + "/" + entity.id.split(".")[1] + ".png";
+              const urlUniqueIcon = baseUrlImageServer + "/" + layerName.split(":")[0] + "/" + layerName.split(":")[1] + "/" + entity.id.split(".")[1] + ".png";
               entity.billboard.image = urlUniqueIcon;
             } else if (icon) {
               entity.billboard.image = iconDataSource;
@@ -133,7 +132,8 @@ export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServe
             entity.name = entityName;
 
             if (urlFiches) {
-              const urlFiche = '<img src="' + urlFiches + entity.properties.id + ".JPG" + '" alt="Image de l\'entité" style="width:100%; height:auto;min-height:500px;">';
+              const formatFiche = formatFiches?formatFiches:'';
+              const urlFiche = '<img src="' + urlFiches + entity.properties.id + formatFiche + '" alt="Image de l\'entité" style="width:100%; height:auto;min-height:500px;">';
 
               const descriptionContent = urlFiche;
               const codeContent = htmlContent;
@@ -146,7 +146,7 @@ export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServe
           resolve(dataSource); // Résolvez la promesse avec la source de données
         })
         .catch(function (error) {
-          console.log(`Erreur lors du chargement de la couche ${layerGeoJsonName}`, error);
+          console.log(`Erreur lors du chargement de la couche ${layerName}`, error);
           reject(error); // Rejetez la promesse avec l'erreur
         });
     } catch (error) {
@@ -155,32 +155,38 @@ export function addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServe
   });
 }
 
-export function initializeGeoJsonLayers(viewer, layers, baseUrlGeoServer, baseUrlImageServer, parentId) {
+export function initializeLayers(viewer, layers, baseUrlGeoServer, baseUrlImageServer, parentId) {
   // Créez un tableau pour stocker toutes les promesses
-  const allGeoJsonsourcesPromises = layers.map((layer) => {
+  const allDataSourcesPromises = layers.map((layer) => {
     // console.log(layer);
     const options = {};
     if (layer.name) options.name = layer.name;
+    if (layer.urlDataSource) options.urlDataSource = layer.urlDataSource;
     if (layer.labelText) options.labelText = layer.labelText;
-    if (layer.markerSymbol) options.markerSymbol = layer.markerSymbol;
-    if (layer.icon) options.icon = layer.icon;
-    if (layer.categorieLabelText) options.categorieLabelText = layer.categorieLabelText;
+    if (layer.categorie) options.categorie = layer.categorie;
+
+    if (layer.urlFiches) options.urlFiches = layer.urlFiches;
+    if (layer.formatFiches) options.formatFiches = layer.formatFiches;
+
     if (layer.distanceDisplayCondition) options.distanceDisplayCondition = layer.distanceDisplayCondition;
     if (layer.distanceDisplayConditionLabel) options.distanceDisplayConditionLabel = layer.distanceDisplayConditionLabel;
+    
+    if (layer.labelFont) options.labelFont = layer.labelFont;
+    if (layer.labelPixelOffset) options.labelPixelOffset = layer.labelPixelOffset;
+    
+    
     if (layer.markerSize) options.markerSize = layer.markerSize;
     if (layer.billboardWidth) options.billboardWidth = layer.billboardWidth;
     if (layer.billboardHeight) options.billboardHeight = layer.billboardHeight;
-    if (layer.labelFont) options.labelFont = layer.labelFont;
-    if (layer.labelPixelOffset) options.labelPixelOffset = layer.labelPixelOffset;
-    if (layer.urlGeoJsonDataSource) options.urlGeoJsonDataSource = layer.urlGeoJsonDataSource;
-    if (layer.urlFiches) options.urlFiches = layer.urlFiches;
+    if (layer.markerSymbol) options.markerSymbol = layer.markerSymbol;
+    if (layer.icon) options.icon = layer.icon;
     if (layer.uniqueIcon) options.uniqueIcon = layer.uniqueIcon;
     if (layer.iconByServer) options.iconByServer = layer.iconByServer;
-    if (layer.categorie) options.categorie = layer.categorie;
+    
 
     //console.log(options);
 
-    return addGeoJsonDataSource(viewer, baseUrlGeoServer, baseUrlImageServer, layer.name, options)
+    return addDataSource(viewer, baseUrlGeoServer, baseUrlImageServer, layer.name, options)
       .then((dataSource) => {
         return {
           labelText: layer.labelText,
@@ -196,7 +202,7 @@ export function initializeGeoJsonLayers(viewer, layers, baseUrlGeoServer, baseUr
   });
 
   // Attendez que toutes les promesses soient résolues
-  return Promise.all(allGeoJsonsourcesPromises)
+  return Promise.all(allDataSourcesPromises)
     .then((results) => {
       const validResults = results.filter((result) => typeof result !== "string");
       const failedLayers = results.filter((result) => typeof result === "string");
