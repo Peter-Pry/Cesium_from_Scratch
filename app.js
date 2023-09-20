@@ -97,3 +97,4 @@ const infobox = document.querySelector(".custom-infobox");
 // makeInfoboxDraggable(infobox);
 // makeInfoboxResizable(infobox);
 //addResizeHandles(infobox);
+//
