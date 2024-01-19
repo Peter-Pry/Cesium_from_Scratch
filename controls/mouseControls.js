@@ -14,11 +14,11 @@ export function ToolTipMouseHover(viewer) {
   // Ajoute un écouteur d'événements pour le mouvement de la souris sur le canvas du viewer
   viewer.canvas.addEventListener("mousemove", function (e) {
     // Tente de sélectionner une entité sous le curseur de la souris
-    var pickedObject = viewer.scene.pick(new Cesium.Cartesian2(e.clientX, e.clientY));
+    let pickedObject = viewer.scene.pick(new Cesium.Cartesian2(e.clientX, e.clientY));
 
     // Vérifie si une entité a été sélectionnée et si elle possède un identifiant
     if (Cesium.defined(pickedObject) && Cesium.defined(pickedObject.id)) {
-      var entity = pickedObject.id;
+      let entity = pickedObject.id;
 
       // Si l'entité possède un label, affiche l'infobulle à côté du curseur et met à jour son contenu
       if (entity.label) {

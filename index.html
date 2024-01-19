@@ -16,58 +16,127 @@
     <!-- Cesium Container -->
     <div id="cesiumContainer"></div>
 
-    <!-- Infobox personnalisée -->
-    <div id="customInfobox" class="custom-infobox">
-        <button class="close-button" aria-label="Fermer l'infobox">X</button>
-        <div id="infoboxContent"></div>
-    </div>
-
-    <!-- Sidebar -->
-    <!-- Open Menu Button -->
-    <button id="open-sidebar-button" aria-label="Menu">☰</button>
-    <aside id="sidebar">
-        <!-- Close Menu Button -->
-        <button id="close-sidebar-button" aria-label="Fermer le menu">X</button>
-
-        <section>
-            <h3>Recherche d'adresse</h3>
-            <!-- Search Bar -->
-            <div id="searchBar">
+    
+    <div id="mainframe">
+        <!-- Left main menu -->
+        <div id="main-menu">
+            <div class="main-menu-button" id="select-btn" data-title="Selection" data-modal-id="selection-menu">
+                <img class="main-menu-btn-img" src="./images/main-menu/Select.png">
             </div>
-        </section>
+            <div class="main-menu-button" id="layers-btn" data-title="Couche" title="Couche" data-modal-id="layer-menu">
+                <img class="main-menu-btn-img" src="./images/main-menu/Couches.png">
+            </div>
+            <div class="main-menu-button" id="tools-btn" data-title="Outils" data-modal-id="tools-menu">
+                <img class="main-menu-btn-img" src="./images/main-menu/Outils.png">
+            </div>
+            <div class="main-menu-button" id="navigation-btn" data-title="Navigation" data-modal-id="navigate-menu">
+                <img class="main-menu-btn-img" src="./images/main-menu/Navigation.png">
+            </div>
+            <div class="main-menu-button" id="search-btn" data-title="Recherche" data-modal-id="search-menu">
+                <img class="main-menu-btn-img" src="./images/main-menu/Loupe.png">
+            </div>
+            <div class="main-menu-button" id="settings-btn" data-title="Paramètres" data-modal-id="settings-menu">
+                <img class="main-menu-btn-img" src="./images/main-menu/Paramètres.png">
+            </div>
+            <div class="main-menu-button" id="draft-btn" data-title="Brouillon" data-modal-id="draft-menu">
+                <img class="main-menu-btn-img" src="./images/main-menu/draft.png">
+            </div>
+        </div>
 
-        <section>
-            <h3>Vues</h3>
-            <div id="views-buttons-container"></div>
+
+
+        
+        <!-- Contenu des modals -->
+        <!-- Menu de sélection -->
+        <div id="selection-menu" class="modal">
+            <span class="close">&times;</span>
+        </div>
+        
+        <!-- Menu des couches de données -->
+        <div id="layer-menu" class="modal">
+            <span class="close">&times;</span>
+            <div class="modal-content">
+                <section>
+                    <h3>Données</h3>
+                    <div id="layer-list"></div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Menu des outils -->
+        <div id="tools-menu" class="modal">
+            <span class="close">&times;</span>
+            <p>Test d'écriture</p>
+            <div class="panel-menu-button" id="distance-btn" data-title="Distance" data-target="distance-feature">
+                <img class="panel-menu-btn-img" src="./images/panel-menu/Distance.png">
+            </div>
+            <div class="panel-menu-button" id="area-btn" data-title="Aire" data-target="area-feature">
+                <img class="panel-menu-btn-img" src="./images/panel-menu/Aire.png">
+            </div>
+            <div class="panel-menu-button" id="level-btn" data-title="Courbe de niveaux" data-target="level-feature">
+                <img class="panel-menu-btn-img" src="./images/panel-menu/Courbes_niveaux.png">
+            </div>
+            <div class="panel-menu-button" id="comparaison-btn" data-title="Avant / Après" data-target="comparaison-feature">
+                <img class="panel-menu-btn-img" src="./images/panel-menu/Comparaison.png">
+            </div>
+        </div>
+
+        <!-- Menu des outils -->
+        <div id="navigate-menu" class="modal" style="display:none;">
+            <span class="close">&times;</span>
             
-        </section>
+        </div>
 
-        <section>
-            <h3>Affichage</h3>
-            <div>
-                <label for="verticalAmountRange">Hauteur des icônes :<span id="rangeValue">100</span></label><br>
-                <input type="range" id="verticalAmountRange" min="0" max="100" step="10" value="100">
-            </div>
-        </section>
+        <!-- Menu de recherche -->
+        <div id="search-menu" class="modal">
+            <span class="close">&times;</span>
 
-        <!-- Imageries List -->
-        <section>
-            <h3>Imageries</h3>
-            <ul id="imageryLayers-list"></ul>
-        </section>
+            <section>
+                <h3>Recherche d'adresse</h3>
+                <div id="searchBar">
+                </div>
+            </section>
+        </div>
 
-        <!-- 3D Models List -->
-        <section>
-            <h3>Modèles 3D</h3>
-            <ul id="primitives-list"></ul>
-        </section>
+        <!-- Menu des paramètres -->
+        <div id="settings-menu" class="modal">
+            <span class="close">&times;</span>
+            
+        </div>
 
-        <!-- Data List -->
-        <section>
-            <h3>Données</h3>
-            <div id="layer-list"></div>
-        </section>
-    </aside>
+        <!-- Menu brouillon -->
+        <div id="draft-menu" class="modal">
+            <span class="close">&times;</span>
+            <section>
+                <h3>Affichage</h3>
+                <div>
+                    <label for="verticalAmountRange">Hauteur des icônes :<span id="rangeValue">100</span></label><br>
+                    <input type="range" id="verticalAmountRange" min="0" max="100" step="10" value="100">
+                </div>
+            </section>
+            <section>
+                <h3>Imageries</h3>
+                <ul id="imageryLayers-list"></ul>
+            </section>
+            <section>
+                <h3>Vues</h3>
+                <div id="views-buttons-container"></div>
+            
+            </section>
+            
+            <section>
+                <h3>Modèles 3D</h3>
+                <ul id="primitives-list"></ul>
+            </section>
+        </div>
+
+        <!-- Infobox personnalisée -->
+        <div id="customInfobox" class="custom-infobox">
+            <button class="close-button" aria-label="Fermer l'infobox">X</button>
+            <div id="infoboxContent"></div>
+        </div>
+
+    </div>
 
     <!-- Main Script -->
     <script src="./layers/GeoserverTerrainProvider.js"></script>

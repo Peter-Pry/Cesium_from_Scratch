@@ -8,10 +8,70 @@ body,
   overflow: hidden;
 }
 
-#sidebar {
+
+#main-menu {
   position: absolute;
   top: 0;
   left: 0;
+  width: 50px;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: black;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-menu-button {
+  cursor: pointer;
+  padding: 15px 0px;
+  display: flex;
+  justify-content: center;
+}
+
+.main-menu-button img {
+  max-width: 40px;
+  max-height: 40px;
+}
+
+
+.main-menu-button:hover img, .panel-menu-button:hover img {
+  filter: opacity(80%);
+}
+
+/* Tooltips with data-title attribut */
+[data-title]:hover:after {
+  opacity: 1;
+  transition: all 0.5s ease 0.25s;
+  visibility: visible;
+}
+
+[data-title]:after {
+
+  content: attr(data-title);
+    background-color: rgb(43,119,194);
+    color: #f9f9f9;
+    position: absolute;
+    padding: 2px 5px 2px 5px;
+    bottom: -10px;
+    font-size: 80%;
+    white-space: nowrap;
+    box-shadow: 0px 1px 3px #222222;
+    opacity: 0;
+    z-index: 99;
+    visibility: hidden;
+}
+[data-title] {
+  display: flex;  
+  justify-content: center;
+  position: relative;
+}
+
+#sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 350px;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
@@ -32,7 +92,7 @@ body,
   position: fixed;
   /* Pour le positionner par rapport à la fenêtre */
   top: 10px;
-  left: 10px;
+  right: 10px;
   /* Changez à 'right: 10px;' si vous voulez qu'il soit à droite */
   background-color: #f1f1f1;
   border: none;
@@ -193,14 +253,14 @@ body,
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-    /* permet aux éléments de se déplacer à la ligne suivante si nécessaire */
+  /* permet aux éléments de se déplacer à la ligne suivante si nécessaire */
 }
 
 #layer-list h4 {
-margin: 15px 0px;
+  margin: 15px 0px;
 }
 
-#layer-list ul{
+#layer-list ul {
   margin: 0px;
 }
 
@@ -283,8 +343,9 @@ margin: 15px 0px;
 #layer-list li .cm-toggle:not(:checked)+label .ico-data {
   filter: grayscale(100%);
 }
-#layer-list li .cm-toggle:not(:checked)+label{
-  color:grey;
+
+#layer-list li .cm-toggle:not(:checked)+label {
+  color: grey;
 }
 
 /* CSS */
@@ -367,4 +428,204 @@ resize-handle {
   top: 0;
   left: 0;
   cursor: nw-resize;
+}
+
+
+/* Style de la modal (background) */
+.modal {
+  display: none;
+  /* Caché par défaut */
+  position: fixed;
+  /* Rester en place */
+  z-index: 1;
+  /* Situé au-dessus */
+  left: 80px;
+  top: 20px;
+  width: 20%;
+  min-width : 350px;
+  max-width: 500px;
+  /* Pleine largeur */
+  min-height: 250px;
+  max-height: calc(100% - 40px);
+  /* Pleine hauteur */
+  overflow: auto;
+  /* Activer le scroll si nécessaire */
+  background-color: rgb(255, 255, 255, 0.7);
+  /* Couleur de fond */
+  border-radius: 10px;
+}
+
+/* Personnalisation de la barre de défilement pour la modale */
+.modal::-webkit-scrollbar {
+  width: 10px;
+  /* Largeur de la barre de défilement */
+}
+
+/* Personnalisation du « thumb » (la partie que vous pouvez déplacer) */
+.modal::-webkit-scrollbar-thumb {
+  background: #888;
+  /* Couleur du thumb */
+  border-radius: 5px;
+  /* Bord arrondi */
+}
+
+/* Changement de couleur au survol ou lors du clic */
+.modal::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  /* Couleur au survol */
+}
+
+/* Style du contenu de la modal */
+.modal-content {
+  display: flex;
+  flex-direction: row;
+  /* background-color: #fefefe; */
+  margin: 15% auto;
+  /* 15% du haut et centré horizontalement */
+  padding: 20px;
+  /* border: 1px solid #888; */
+  width: 80%;
+  /* Largeur */
+}
+
+/* Bouton pour fermer la modal (x) */
+.close {
+  color: #aaa;
+  /* float: right; */
+  position : absolute;
+  top:10px;
+  right:10px;
+  font-size: 28px;
+  font-weight: bold;
+  background-color: #ddd;
+  border-radius: 90px;
+  padding: 0px 7px;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* .panel-menu {
+  position: absolute;
+  top: 10px;
+  left: 80px;
+  width: 20%;
+  max-width: 450px;
+  height: 80%;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: black;
+  padding: 20px;
+  border-radius: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+} */
+
+/* .panel-menu>div {
+  margin: 0 5px;
+  ;
+}
+
+.panel-menu-btn-img {
+  width: 100px;
+  cursor: pointer;
+} */
+
+.tab-container {
+  font-family: Arial, sans-serif;
+}
+
+.tabs {
+  display: flex;
+  background: #ffffff;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tab:not(:last-child) {
+  margin-right: 10px;
+}
+
+.tab:hover {
+  background-color: #f2f2f2;
+}
+
+.tab i {
+  margin-right: 8px;
+}
+
+.tab-content {
+  display: none;
+  padding: 20px;
+  border: 1px solid #ddd;
+  margin-top: -1px;
+  /* Aligns content box with tabs */
+}
+
+/* Icon classes, replace with actual icon paths or use a font icon library */
+.icon-tools:before {
+  content: url('path-to-tools-icon.svg');
+}
+
+.icon-environment:before {
+  content: url('path-to-environment-icon.svg');
+}
+
+.icon-maps:before {
+  content: url('path-to-maps-icon.svg');
+}
+
+/* Styles for active tab */
+.active-tab {
+  background-color: #e0e0e0;
+}
+
+/* Styles for active tab content */
+.active-content {
+  display: block;
+}
+
+
+
+
+.layer-control-button {
+  padding: 5px 10px;
+  margin: 2px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8em;
+}
+
+.layer-control-button:hover {
+  background-color: #0056b3;
+}
+
+.layer-opacity-control {
+  width: 100px;
+  margin: 0 5px;
+}
+
+#imageryLayers-list li {
+  list-style: none;
+  padding: 5px;
+  margin: 5px 0;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: black;
 }

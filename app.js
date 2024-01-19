@@ -20,13 +20,14 @@ import { generateAndAttachViewButtons } from "./interfaces/addButtonCenterView.j
 //import { setInfoboxDraggable } from "./interfaces/setInfoboxDraggable.js";
 //import { setInfoboxResizable } from "./interfaces/setInfoboxResizable.js";
 
-// Initialisation des contrôles de la barre latérale
-// Récupération des éléments du DOM nécessaires
-const sidebar = document.getElementById("sidebar");
-const closeSidebarButton = document.getElementById("close-sidebar-button");
-const openSidebarButton = document.getElementById("open-sidebar-button");
-setSidebarOpenable(sidebar, openSidebarButton, closeSidebarButton);
 
+//Menu
+// const menuBtns = document.getElementsByClassName("main-menu-button");
+// for (const menubtn of menuBtns){
+//   menubtn.addEventListener("click", (item)=>{
+//     console.log(item.target.parentNode.getAttribute('data-target'));
+// })
+// }
 //# Choix du terrain
 // 1 - Terrain fournit par Seb (Attention décalage de niveau)
 const terrainProvider = new Cesium.Terrain(Cesium.CesiumTerrainProvider.fromUrl(config.terrainProviderUrl, { depthTestAgainstTerrain: true }));
@@ -44,6 +45,67 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
   timeline: false,
   useBrowserRecommendedResolution: true,
 });
+
+
+//Gestion Modal
+// Fonction pour ouvrir une modale spécifique
+function openModal(modalContentId) {
+  // Masquer toutes les modales
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.style.display = 'none';
+  });
+
+  // Afficher la modale sélectionnée
+  const selectedModal = document.getElementById(modalContentId);
+  if (selectedModal) {
+    selectedModal.style.display = 'block';
+  }
+}
+
+// Attachez un écouteur d'événements à chaque bouton du menu principal
+const btns = document.getElementsByClassName("main-menu-button");
+for (let btn of btns) {
+  btn.addEventListener("click", function () {
+    const modalContentId = this.getAttribute("data-modal-id");
+    openModal(modalContentId);
+  });
+}
+
+// Gestion de la fermeture des modales
+const closeSpans = document.querySelectorAll(".modal>.close");
+console.log(closeSpans);
+
+closeSpans.forEach(closeSpan=>{
+  closeSpan.onclick = ()=>{
+    closeSpan.parentNode.style.display = "none";
+  }
+})
+
+
+
+
+
+  // Gestion Onglet dans le menu
+  
+  const tabs = document.querySelectorAll(".tab");
+  const tabContents = document.querySelectorAll(".tab-content");
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      // Remove active class from all tabs and contents
+      tabs.forEach((t) => t.classList.remove("active-tab"));
+      tabContents.forEach((c) => c.classList.remove("active-content"));
+
+      // Add active class to clicked tab and corresponding content
+      tab.classList.add("active-tab");
+      const activeTabContent = document.getElementById(tab.getAttribute("data-tab"));
+      activeTabContent.classList.add("active-content");
+    });
+  });
+
+
+  
+
 //Suppression des Crédit Cesium ION (si nécessaire)
 viewer._cesiumWidget._creditContainer.parentNode.removeChild(viewer._cesiumWidget._creditContainer);
 

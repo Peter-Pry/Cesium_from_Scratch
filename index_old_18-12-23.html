@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="./images/favicon.ico" />
+    <!-- Stylesheets -->
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <!-- Scripts -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Cesium.js"></script>
+</head>
+
+<body>
+    <!-- Cesium Container -->
+    <div id="cesiumContainer"></div>
+
+    <div id="mainframe">
+
+
+        <!-- Infobox personnalisée -->
+        <div id="customInfobox" class="custom-infobox">
+            <button class="close-button" aria-label="Fermer l'infobox">X</button>
+            <div id="infoboxContent"></div>
+        </div>
+
+        <!-- Sidebar -->
+        <!-- Open Menu Button -->
+        <button id="open-sidebar-button" aria-label="Menu">☰</button>
+        <aside id="sidebar">
+            <!-- Close Menu Button -->
+            <button id="close-sidebar-button" aria-label="Fermer le menu">X</button>
+
+            <section>
+                <h3>Recherche d'adresse</h3>
+                <!-- Search Bar -->
+                <div id="searchBar">
+                </div>
+            </section>
+
+            <section>
+                <h3>Vues</h3>
+                <div id="views-buttons-container"></div>
+
+            </section>
+
+            <section>
+                <h3>Affichage</h3>
+                <div>
+                    <label for="verticalAmountRange">Hauteur des icônes :<span id="rangeValue">100</span></label><br>
+                    <input type="range" id="verticalAmountRange" min="0" max="100" step="10" value="100">
+                </div>
+            </section>
+
+            <!-- Imageries List -->
+            <section>
+                <h3>Imageries</h3>
+                <ul id="imageryLayers-list"></ul>
+            </section>
+
+            <!-- 3D Models List -->
+            <section>
+                <h3>Modèles 3D</h3>
+                <ul id="primitives-list"></ul>
+            </section>
+
+            <!-- Data List -->
+            <section>
+                <h3>Données</h3>
+                <div id="layer-list"></div>
+            </section>
+        </aside>
+    </div>
+
+    <!-- Main Script -->
+    <script src="./layers/GeoserverTerrainProvider.js"></script>
+    <script type="module" src="app.js" async></script>
+</body>
+
+</html>
