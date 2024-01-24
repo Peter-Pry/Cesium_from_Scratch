@@ -4,14 +4,20 @@ import { config } from "./config.js";
 //Importation des fonctions pour ajouter des couches
 import addImagerySource from "./layers/ImagerySource.js";
 import { add3DModelsTiles } from "./layers/3DModelsTiles.js";
-import { initializeLayers, getLayersFromWorkspace } from "./layers/LayerDataSource.js";
+import {
+  initializeLayers,
+  getLayersFromWorkspace,
+} from "./layers/LayerDataSource.js";
 
 //Importation pour ajouter des fonctionnalités
 import addSearchModule from "./features/addressSearchModule.js";
 
 //Importation des fonctions pour ajouter des contrôles à l'application
 import { setSidebarOpenable } from "./interfaces/setSidebarOpenable.js";
-import { ToolTipMouseHover, addLeftClickHandler } from "./controls/mouseControls.js";
+import {
+  ToolTipMouseHover,
+  addLeftClickHandler,
+} from "./controls/mouseControls.js";
 
 //Importation des fonctions pour ajouter des élèments d'interfaces
 import { updateEntitiesVerticalPosition } from "./interfaces/setImageEntityVerticalPosition.js";
@@ -19,7 +25,6 @@ import { generateAndAttachViewButtons } from "./interfaces/addButtonCenterView.j
 //import { addResizeHandles } from "./interfaces/setInfoBoxResize.js";
 //import { setInfoboxDraggable } from "./interfaces/setInfoboxDraggable.js";
 //import { setInfoboxResizable } from "./interfaces/setInfoboxResizable.js";
-
 
 //Menu
 // const menuBtns = document.getElementsByClassName("main-menu-button");
@@ -30,7 +35,11 @@ import { generateAndAttachViewButtons } from "./interfaces/addButtonCenterView.j
 // }
 //# Choix du terrain
 // 1 - Terrain fournit par Seb (Attention décalage de niveau)
-const terrainProvider = new Cesium.Terrain(Cesium.CesiumTerrainProvider.fromUrl(config.terrainProviderUrl, { depthTestAgainstTerrain: true }));
+const terrainProvider = new Cesium.Terrain(
+  Cesium.CesiumTerrainProvider.fromUrl(config.terrainProviderUrl, {
+    depthTestAgainstTerrain: true,
+  })
+);
 
 // 2 - Terrain fournit par IGO
 // const terrainProvider = Cesium.Terrain.fromWorldTerrain({requestWaterMask: true,requestVertexNormals: true,});
@@ -38,7 +47,11 @@ const terrainProvider = new Cesium.Terrain(Cesium.CesiumTerrainProvider.fromUrl(
 // Création du viewer Cesium avec les configurations spécifiées
 const viewer = new Cesium.Viewer("cesiumContainer", {
   terrain: terrainProvider,
-  baseLayer: Cesium.ImageryLayer.fromProviderAsync(Cesium.TileMapServiceImageryProvider.fromUrl(Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII"))), //Avoir un fond de carte base résolution par défaut
+  baseLayer: Cesium.ImageryLayer.fromProviderAsync(
+    Cesium.TileMapServiceImageryProvider.fromUrl(
+      Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII")
+    )
+  ), //Avoir un fond de carte base résolution par défaut
   baseLayerPicker: false,
   geocoder: false,
   animation: false,
@@ -46,19 +59,18 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
   useBrowserRecommendedResolution: true,
 });
 
-
 //Gestion Modal
 // Fonction pour ouvrir une modale spécifique
 function openModal(modalContentId) {
   // Masquer toutes les modales
-  document.querySelectorAll('.modal').forEach(modal => {
-    modal.style.display = 'none';
+  document.querySelectorAll(".modal").forEach((modal) => {
+    modal.style.display = "none";
   });
 
   // Afficher la modale sélectionnée
   const selectedModal = document.getElementById(modalContentId);
   if (selectedModal) {
-    selectedModal.style.display = 'block';
+    selectedModal.style.display = "block";
   }
 }
 
@@ -75,39 +87,75 @@ for (let btn of btns) {
 const closeSpans = document.querySelectorAll(".modal>.close");
 console.log(closeSpans);
 
-closeSpans.forEach(closeSpan=>{
-  closeSpan.onclick = ()=>{
+closeSpans.forEach((closeSpan) => {
+  closeSpan.onclick = () => {
     closeSpan.parentNode.style.display = "none";
-  }
-})
+  };
+});
 
+// // Gestion Onglet dans le menu
 
+// const tabs = document.querySelectorAll(".tab");
+// const tabContents = document.querySelectorAll(".tab-content");
 
+// tabs.forEach((tab) => {
+//   tab.addEventListener("click", () => {
+//     // Remove active class from all tabs and contents
+//     tabs.forEach((t) => t.classList.remove("active-tab"));
+//     tabContents.forEach((c) => c.classList.remove("active-content"));
 
+//     // Add active class to clicked tab and corresponding content
+//     tab.classList.add("active-tab");
+//     const activeTabContent = document.getElementById(tab.getAttribute("data-tab"));
+//     activeTabContent.classList.add("active-content");
+//   });
+// });
 
-  // Gestion Onglet dans le menu
-  
-  const tabs = document.querySelectorAll(".tab");
-  const tabContents = document.querySelectorAll(".tab-content");
+//Gestion des tabs
+// Ajouter le gestionnaire d'événement 'DOMContentLoaded' pour s'assurer que le DOM est chargé
 
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      // Remove active class from all tabs and contents
-      tabs.forEach((t) => t.classList.remove("active-tab"));
-      tabContents.forEach((c) => c.classList.remove("active-content"));
+const tabButtons = document.querySelectorAll(".tab-button");
+const tabContents = document.querySelectorAll(".tab-content");
 
-      // Add active class to clicked tab and corresponding content
-      tab.classList.add("active-tab");
-      const activeTabContent = document.getElementById(tab.getAttribute("data-tab"));
-      activeTabContent.classList.add("active-content");
-    });
+// Attacher les gestionnaires d'événements aux boutons d'onglets
+tabButtons.forEach((button) => {
+  button.addEventListener("click", function () {
+    // Activer l'onglet sélectionné et désactiver les autres
+    tabButtons.forEach((btn) => btn.classList.remove("active"));
+    tabContents.forEach((content) => content.classList.remove("active"));
+
+    this.classList.add("active");
+    const activeTabContent = document.getElementById(this.dataset.tab);
+    activeTabContent.classList.add("active");
   });
+});
+
+// Gestionnaire pour le bouton de fermeture
+const closeTab = document.querySelector(".tab-close");
+closeTab.addEventListener("click", () => {
+  const tabsContainer = closeTab.closest(".tabs");
+  tabsContainer.style.display = "none";
+  tabContents.forEach((content) => (content.style.display = "none"));
+});
+
+// Activer le premier onglet par défaut
+if (tabButtons.length > 0) {
+  tabButtons[0].click();
+}
+
+// Close button functionality (optional)
+document.querySelector(".tab-close").addEventListener("click", function () {
+  this.parentElement.style.display = "none"; // Hides the tab bar
+  // You would also want to hide the content here.
+});
 
 
-  
+
 
 //Suppression des Crédit Cesium ION (si nécessaire)
-viewer._cesiumWidget._creditContainer.parentNode.removeChild(viewer._cesiumWidget._creditContainer);
+viewer._cesiumWidget._creditContainer.parentNode.removeChild(
+  viewer._cesiumWidget._creditContainer
+);
 
 // Positionnement initial de la caméra selon les coordonnées spécifiées dans le fichier de configuration
 viewer.camera.setView(config.cameraCoordinates);
@@ -123,11 +171,21 @@ const infoboxContentElement = document.getElementById("infoboxContent");
 addLeftClickHandler(viewer, customInfoboxElement, infoboxContentElement);
 
 // Initialisation et ajout des couches de données GeoJson au viewer
-initializeLayers(viewer, config.layers, config.urls.urlGeoserver, config.urls.urlImagesServer, "layer-list").then((failedLayers) => {
+initializeLayers(
+  viewer,
+  config.layers,
+  config.urls.urlGeoserver,
+  config.urls.urlImagesServer,
+  "layer-list"
+).then((failedLayers) => {
   if (failedLayers.length === 0) {
     console.log("Toutes les couches GeoJson ont été initialisées !");
   } else {
-    console.log(`Les couches suivantes n'ont pas pu être chargées: \n  ${failedLayers.join(",\n  ")}`);
+    console.log(
+      `Les couches suivantes n'ont pas pu être chargées: \n  ${failedLayers.join(
+        ",\n  "
+      )}`
+    );
   }
   updateEntitiesVerticalPosition(viewer, 100);
 });
@@ -141,20 +199,21 @@ add3DModelsTiles(viewer, config.mesh3DSources, "primitives-list");
 // Initialisation et ajout du module de recherche d'adresse au viewer
 addSearchModule(viewer, "searchBar");
 
-
 //Intialisation des boutons pours les vues
 const buttons = generateAndAttachViewButtons(config.views, viewer);
 const container = document.getElementById("views-buttons-container");
 buttons.forEach((button) => container.appendChild(button));
 
 // Écouteur d'événements pour l'input range pour modifier la hauteur des icônes
-document.getElementById("verticalAmountRange").addEventListener("input", function (event) {
-  const newVerticalAmount = parseFloat(event.target.value);
-  document.getElementById("rangeValue").textContent = newVerticalAmount; // Mettre à jour le label
-  updateEntitiesVerticalPosition(viewer, newVerticalAmount); // Mettre à jour les entités
-});
+document
+  .getElementById("verticalAmountRange")
+  .addEventListener("input", function (event) {
+    const newVerticalAmount = parseFloat(event.target.value);
+    document.getElementById("rangeValue").textContent = newVerticalAmount; // Mettre à jour le label
+    updateEntitiesVerticalPosition(viewer, newVerticalAmount); // Mettre à jour les entités
+  });
 
-// Ajout de 
+// Ajout de
 const infobox = document.querySelector(".custom-infobox");
 // makeInfoboxDraggable(infobox);
 // makeInfoboxResizable(infobox);

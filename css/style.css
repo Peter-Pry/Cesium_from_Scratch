@@ -529,13 +529,21 @@ resize-handle {
   margin: 0 5px;
   ;
 }
+*/
 
-.panel-menu-btn-img {
-  width: 100px;
-  cursor: pointer;
+/* .tab-content{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 } */
 
-.tab-container {
+.panel-menu-btn-img {
+  width: 90px;
+  cursor: pointer;
+  margin : 10px 5px;
+} 
+
+/* .tab-container {
   font-family: Arial, sans-serif;
 }
 
@@ -572,7 +580,7 @@ resize-handle {
   border: 1px solid #ddd;
   margin-top: -1px;
   /* Aligns content box with tabs */
-}
+} */
 
 /* Icon classes, replace with actual icon paths or use a font icon library */
 .icon-tools:before {
@@ -628,4 +636,86 @@ resize-handle {
   border: 1px solid #ddd;
   border-radius: 4px;
   color: black;
+}
+
+
+.tabs {
+  display: flex;
+  justify-content: start;
+  background: #f0f0f0;
+  padding: 5px;
+  border: solid 1px #ccc;
+  border-radius: 4px;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+  outline: none;
+  border-radius: 4px;
+}
+
+.tab-button.active {
+  background-color: #fff;
+  border: solid 1px #ccc;
+}
+
+.tab-close {
+  margin-left: auto;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.tab-content {
+  display: none;
+  border: solid 1px #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+.tab-content.active {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.tabs ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tabs ul li {
+  margin-bottom: 5px;
+}
+
+.tabs ul li input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
 }

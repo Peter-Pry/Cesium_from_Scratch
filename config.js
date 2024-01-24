@@ -8,6 +8,7 @@ const layers = [
   {
     name: "antibes:AIRES_DE_JEUX",
     labelText: "Aires de jeux",
+    categorie: "Environnement et Espaces verts",
     icon: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX/AIRES_DE_JEUX.png",
     urlFiches: urls.urlImagesServer + "/antibes/AIRES_DE_JEUX/",
     formatFiches: ".JPG",
@@ -16,6 +17,7 @@ const layers = [
   {
     name: "antibes:CENTRE_DE_LOISIRS",
     labelText: "Centre de loisirs",
+    categorie: "Éducation",
     icon: urls.urlImagesServer + "/antibes/CENTRE_DE_LOISIRS/CENTRE_DE_LOISIRS.png",
     urlFiches: urls.urlImagesServer + "/antibes/CENTRE_DE_LOISIRS/",
     formatFiches: ".JPG",
@@ -23,7 +25,7 @@ const layers = [
   {
     name: "antibes:COLLEGES",
     labelText: "Collèges",
-    categorie: "Education",
+    categorie: "Éducation",
     icon: urls.urlImagesServer + "/antibes/COLLEGES/COLLEGES.png",
     urlFiches: urls.urlImagesServer + "/antibes/COLLEGES/",
     formatFiches: ".JPG",
@@ -31,7 +33,7 @@ const layers = [
   {
     name: "antibes:ECOLES_ELEMENTAIRES",
     labelText: "Écoles élémentaires",
-    categorie: "Education",
+    categorie: "Éducation",
     icon: urls.urlImagesServer + "/antibes/ECOLES_ELEMENTAIRES/ECOLES_ELEMENTAIRES.png",
     urlFiches: urls.urlImagesServer + "/antibes/ECOLES_ELEMENTAIRES/",
     formatFiches: ".JPG",
@@ -39,7 +41,7 @@ const layers = [
   {
     name: "antibes:ECOLES_MATERNELLES",
     labelText: "Écoles maternelles",
-    categorie: "Education",
+    categorie: "Éducation",
     icon: urls.urlImagesServer + "/antibes/ECOLES_MATERNELLES/ECOLES_MATERNELLES.png",
     urlFiches: urls.urlImagesServer + "/antibes/ECOLES_MATERNELLES/",
     formatFiches: ".JPG",
@@ -47,7 +49,7 @@ const layers = [
   {
     name: "antibes:ECOLES_PRIVEES",
     labelText: "Écoles privées",
-    categorie: "Education",
+    categorie: "Éducation",
     icon: urls.urlImagesServer + "/antibes/ECOLES_PRIVEES/ECOLES_PRIVEES.png",
     urlFiches: urls.urlImagesServer + "/antibes/ECOLES_PRIVEES/",
     formatFiches: ".JPG",
@@ -63,6 +65,7 @@ const layers = [
   {
     name: "antibes:EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS",
     labelText: "Établissement culturels",
+    categorie: "Culture",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS/EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ETABLISSEMENTS_CULTURELS/",
     formatFiches: ".JPG",
@@ -71,6 +74,7 @@ const layers = [
   {
     name: "antibes:EQUIPEMENTS_CULTURELS_PATRIMOINE",
     labelText: "Patrimoine",
+    categorie: "Culture",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE/EQUIPEMENTS_CULTURELS_PATRIMOINE.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE/",
     formatFiches: ".JPG",
@@ -79,6 +83,7 @@ const layers = [
   {
     name: "antibes:EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE",
     labelText: "Patrimoine durable",
+    categorie: "Culture",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE/EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_PATRIMOINE_DURABLE/",
     formatFiches: ".JPG",
@@ -86,6 +91,7 @@ const layers = [
   {
     name: "antibes:EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT",
     labelText: "Sculpture à ciel ouvert",
+    categorie: "Culture",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT/EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_SCULPTURE_A_CIEL_OUVERT/",
     formatFiches: ".JPG",
@@ -94,6 +100,7 @@ const layers = [
   {
     name: "antibes:JARDINS_PARTAGES",
     labelText: "Jardins partagés",
+    categorie: "Environnement et Espaces verts",
     icon: urls.urlImagesServer + "/antibes/JARDINS_PARTAGES/JARDINS_PARTAGES.png",
     urlFiches: urls.urlImagesServer + "/antibes/JARDINS_PARTAGES/",
     formatFiches: ".JPG",
@@ -101,6 +108,7 @@ const layers = [
   {
     name: "antibes:LIEUX_ACCUEIL_ENFANTS_PARENTS",
     labelText: "Lieux accueil enfants-parents",
+    categorie: "Petite enfance",
     icon: urls.urlImagesServer + "/antibes/LIEUX_ACCUEIL_ENFANTS_PARENTS/LIEUX_ACCUEIL_ENFANTS_PARENTS.png",
     urlFiches: urls.urlImagesServer + "/antibes/LIEUX_ACCUEIL_ENFANTS_PARENTS/",
     formatFiches: ".JPG",
@@ -108,6 +116,7 @@ const layers = [
   {
     name: "antibes:LUDOTHEQUES",
     labelText: "Ludothèques",
+    categorie: "Petite enfance",
     icon: urls.urlImagesServer + "/antibes/LUDOTHEQUES/LUDOTHEQUES.png",
     urlFiches: urls.urlImagesServer + "/antibes/LUDOTHEQUES/",
     formatFiches: ".JPG",
@@ -115,6 +124,7 @@ const layers = [
   {
     name: "antibes:EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS",
     labelText: "Artistes et Artisans d'art",
+    categorie: "Culture",
     icon: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS/EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS.png",
     urlFiches: urls.urlImagesServer + "/antibes/EQUIPEMENTS_CULTURELS_ARTISTES_ARTISANS/",
     formatFiches: ".JPG",
