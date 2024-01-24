@@ -308,11 +308,22 @@ export function initializeLayers(
         // Bouton pour chaque catégorie
         const collapsible = document.createElement("button");
         collapsible.classList.add("collapsible");
-        collapsible.innerText = category;
+        collapsible.classList.add("active");
+        const texte = document.createElement("span");
+        texte.classList.add("category-title");
+        texte.innerText = category;
+        collapsible.appendChild(texte);
+        // Créez un élément span pour le chevron
+        const chevron = document.createElement("span");
+        chevron.classList.add("chevron");
+
+        // Ajoutez le chevron au bouton collapsible
+        collapsible.appendChild(chevron);
 
         // Conteneur pour les éléments de la catégorie
         const content = document.createElement("div");
         content.classList.add("content");
+        content.style.display = "block";
 
         // Liste pour les éléments
         const subList = document.createElement("ul");
