@@ -11,14 +11,19 @@ import { capitalizeFirstLetterOfEachWord } from "../utils/capitalizeFirstLetterO
 export default function addSearchModule(viewer, containerId, options = {}) {
   // Initialisation des éléments du DOM
   const container = document.getElementById(containerId);
+
   const addressInput = document.createElement("input");
   const searchButton = document.createElement("button");
   const geocodingService = document.createElement("select");
   const resultsContainer = document.createElement("div");
+  const searchBox = document.createElement('div');
 
   // Configuration des éléments du DOM
-  addressInput.placeholder = "Entrez une adresse...";
-  searchButton.textContent = "Rechercher";
+  addressInput.placeholder = "Rechercher une adresse...";
+  addressInput.classList.add("search-input");
+  searchButton.textContent = "Recherche";
+  searchButton.classList.add("search-button");
+  searchBox.classList.add("search-box");
   resultsContainer.classList.add("adress-search-results-container");
 
   // Ajout des options de géocodage configurables
@@ -37,9 +42,11 @@ export default function addSearchModule(viewer, containerId, options = {}) {
   });
 
   // Ajout des éléments au conteneur
-  container.appendChild(addressInput);
-  container.appendChild(geocodingService);
-  container.appendChild(searchButton);
+  searchBox.appendChild(addressInput)
+  searchBox.appendChild(searchButton);
+  container.appendChild(searchBox);
+  // container.appendChild(geocodingService);
+  
   container.appendChild(resultsContainer);
 
   // Fonction pour vérifier si un élément est en dehors de la zone de recherche et du bouton de recherche
@@ -157,7 +164,7 @@ export default function addSearchModule(viewer, containerId, options = {}) {
     const service = geocodingService.value;
 
     if (query.length > 2) {
-      const data = await getSearchResults(query, service);
+      const data = await getSearchResults(query, "ign_search");
       updateResultsContainer(data, service, resultsContainer, addressInput, viewer);
     } else {
       resultsContainer.innerHTML = "";
@@ -237,7 +244,7 @@ export default function addSearchModule(viewer, containerId, options = {}) {
   searchButton.addEventListener("click", async () => {
     const address = addressInput.value;
     const service = geocodingService.value; // Obtenez le service choisi
-    const data = await getSearchResults(address, service);
+    const data = await getSearchResults(address, "ign_search");
 
     let coordinates;
 

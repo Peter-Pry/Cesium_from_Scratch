@@ -55,99 +55,100 @@
         <!-- Menu des couches de données -->
         <div id="layer-menu" class="modal">
             <span class="close">&times;</span>
-            <div class="modal-content">
-                <div id="layer-list"></div>
+
+            <div class="tabs">
+                <button class="tab-button" data-tab="Navigation">Navigation</button>
+            </div>
+
+            <div id="Navigation" class="tab-content">
+                <div id="layer-list">
+                    <!-- La génération des couches est gérée par la fonction initializeLayers(...) dans app.js -->
+                </div>
             </div>
         </div>
 
         <!-- Menu des outils -->
         <div id="tools-menu" class="modal">
             <span class="close">&times;</span>
+            <div class="tabs">
+                <button class="tab-button" data-tab="Outils">Couches</button>
+                <button class="tab-button" data-tab="Luminosite">Luminosité / ombre</button>
+            </div>
 
-            <div class="panel-menu">
-
-                <div class="tabs">
-                    <button class="tab-button" data-tab="Outils">Couches</button>
-                    <button class="tab-button" data-tab="Arbre">Arbre du projet</button>
-                    <div class="tab-close">✖</div>
+            <div id="Outils" class="tab-content">
+                <div class="panel-menu-button" id="distance-btn" data-title="Distance" data-target="distance-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Distance.png">
                 </div>
-
-                <div id="Outils" class="tab-content">
-                    <!-- Contenu de l'onglet Outils -->
-
-                    <div class="panel-menu-button" id="distance-btn" data-title="Distance"
-                        data-target="distance-feature">
-                        <img class="panel-menu-btn-img" src="./images/panel-menu/Distance.png">
-                    </div>
-                    <div class="panel-menu-button" id="area-btn" data-title="Aire" data-target="area-feature">
-                        <img class="panel-menu-btn-img" src="./images/panel-menu/Aire.png">
-                    </div>
-                    <div class="panel-menu-button" id="level-btn" data-title="Courbe de niveaux"
-                        data-target="level-feature">
-                        <img class="panel-menu-btn-img" src="./images/panel-menu/Courbes_niveaux.png">
-                    </div>
-                    <div class="panel-menu-button" id="comparaison-btn" data-title="Avant / Après"
-                        data-target="comparaison-feature">
-                        <img class="panel-menu-btn-img" src="./images/panel-menu/Comparaison.png">
-                    </div>
+                <div class="panel-menu-button" id="area-btn" data-title="Aire" data-target="area-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Aire.png">
                 </div>
+                <div class="panel-menu-button" id="level-btn" data-title="Courbe de niveaux"
+                    data-target="level-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Courbes_niveaux.png">
+                </div>
+                <div class="panel-menu-button" id="comparaison-btn" data-title="Avant / Après"
+                    data-target="comparaison-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Comparaison.png">
+                </div>
+                <div class="panel-menu-button" id="vue-btn" data-title="Vue" data-target="vue-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Vue.png">
+                </div>
+            </div>
 
-                <div id="Arbre" class="tab-content">
-                    <!-- Contenu de l'onglet Arbre du projet -->
-                    <p>Tout le contenu de l'arbre du projet...</p>
+            <div id="Luminosite" class="tab-content">
+                <!-- Contenu de l'onglet Arbre du projet -->
+                <div class="panel-menu-button" id="luminosite-btn" data-title="Luminosité"
+                    data-target="luminosite-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Luminosite.png">
+                </div>
+                <div class="panel-menu-button" id="ombre-btn" data-title="Ombre" data-target="ombre-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Ombres.png">
                 </div>
             </div>
         </div>
 
-        <!-- Menu des outils -->
+        <!-- Menu de navigation -->
         <div id="navigate-menu" class="modal" style="display:none;">
             <span class="close">&times;</span>
+            <div class="tabs">
+                <button class="tab-button" data-tab="Parametres">Paramètres</button>
+                <button class="tab-button" data-tab="Localisation">localisation</button>
+            </div>
 
-            <div class="panel-menu">
-
-                <div class="tabs">
-                    <button class="tab-button" data-tab="Autres">Autres</button>
-                    <button class="tab-button" data-tab="test">test</button>
-                    <div class="tab-close">✖</div>
+            <div id="Parametres" class="tab-content">
+                <div class="panel-menu-button" id="accueil-btn" data-title="Accueil" data-target="accueil-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Accueil.png">
                 </div>
-
-                <div id="Autres" class="tab-content">
-                    <!-- Contenu de l'onglet Outils -->
-
-                    <div class="panel-menu-button" id="distance-btn" data-title="Distance"
-                        data-target="distance-feature">
-                        <img class="panel-menu-btn-img" src="./images/panel-menu/Distance.png">
-                    </div>
-                    <div class="panel-menu-button" id="area-btn" data-title="Aire" data-target="area-feature">
-                        <img class="panel-menu-btn-img" src="./images/panel-menu/Aire.png">
-                    </div>
-                    <div class="panel-menu-button" id="level-btn" data-title="Courbe de niveaux"
-                        data-target="level-feature">
-                        <img class="panel-menu-btn-img" src="./images/panel-menu/Courbes_niveaux.png">
-                    </div>
-                    <div class="panel-menu-button" id="comparaison-btn" data-title="Avant / Après"
-                        data-target="comparaison-feature">
-                        <img class="panel-menu-btn-img" src="./images/panel-menu/Comparaison.png">
-                    </div>
-                </div>
-
-                <div id="Test" class="tab-content">
-                    <!-- Contenu de l'onglet Arbre du projet -->
-                    <p>Tout le contenu de l'arbre du projet...</p>
+                <div class="panel-menu-button" id="localisation-btn" data-title="Localisation"
+                    data-target="localisation-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Localisation.png">
                 </div>
             </div>
 
+            <div id="Localisation" class="tab-content">
+                <div class="panel-menu-button" id="partager-btn" data-title="Partager" data-target="partager-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Partager.png">
+                </div>
+                <div class="panel-menu-button" id="itineraire-btn" data-title="Itinéraire"
+                    data-target="itineraire-feature">
+                    <img class="panel-menu-btn-img" src="./images/panel-menu/Itineraire.png">
+                </div>
+            </div>
         </div>
 
         <!-- Menu de recherche -->
         <div id="search-menu" class="modal">
             <span class="close">&times;</span>
-
-            <section>
-                <h3>Recherche d'adresse</h3>
-                <div id="searchBar">
+            <div class="tabs">
+                <button class="tab-button" data-tab="Recherche">Recherche</button>
+            </div>
+            <div id="Recherche" class="tab-content">
+                <div id="searchBar" class="searchbar">
+                    <!-- La génération de la barre de recherche est gérée par la fonction addSearchModule(...) dans app.js -->
                 </div>
-            </section>
+
+            </div>
+
         </div>
 
         <!-- Menu des paramètres -->

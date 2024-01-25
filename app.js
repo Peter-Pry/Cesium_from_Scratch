@@ -59,6 +59,8 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
   useBrowserRecommendedResolution: true,
 });
 
+
+
 //Gestion Modal
 // Fonction pour ouvrir une modale spécifique
 function openModal(modalContentId) {
@@ -71,6 +73,12 @@ function openModal(modalContentId) {
   const selectedModal = document.getElementById(modalContentId);
   if (selectedModal) {
     selectedModal.style.display = "block";
+
+    // Trouvez le premier bouton d'onglet dans la modale et déclenchez un clic
+    const firstTabButton = selectedModal.querySelector(".tab-button");
+    if (firstTabButton) {
+      firstTabButton.click();
+    }
   }
 }
 
@@ -85,35 +93,15 @@ for (let btn of btns) {
 
 // Gestion de la fermeture des modales
 const closeSpans = document.querySelectorAll(".modal>.close");
-console.log(closeSpans);
-
 closeSpans.forEach((closeSpan) => {
   closeSpan.onclick = () => {
     closeSpan.parentNode.style.display = "none";
   };
 });
 
-// // Gestion Onglet dans le menu
-
-// const tabs = document.querySelectorAll(".tab");
-// const tabContents = document.querySelectorAll(".tab-content");
-
-// tabs.forEach((tab) => {
-//   tab.addEventListener("click", () => {
-//     // Remove active class from all tabs and contents
-//     tabs.forEach((t) => t.classList.remove("active-tab"));
-//     tabContents.forEach((c) => c.classList.remove("active-content"));
-
-//     // Add active class to clicked tab and corresponding content
-//     tab.classList.add("active-tab");
-//     const activeTabContent = document.getElementById(tab.getAttribute("data-tab"));
-//     activeTabContent.classList.add("active-content");
-//   });
-// });
 
 //Gestion des tabs
 // Ajouter le gestionnaire d'événement 'DOMContentLoaded' pour s'assurer que le DOM est chargé
-
 const tabButtons = document.querySelectorAll(".tab-button");
 const tabContents = document.querySelectorAll(".tab-content");
 
@@ -131,23 +119,23 @@ tabButtons.forEach((button) => {
 });
 
 // Gestionnaire pour le bouton de fermeture
-const closeTab = document.querySelector(".tab-close");
-closeTab.addEventListener("click", () => {
-  const tabsContainer = closeTab.closest(".tabs");
-  tabsContainer.style.display = "none";
-  tabContents.forEach((content) => (content.style.display = "none"));
-});
+// const closeTab = document.querySelector(".tab-close");
+// closeTab.addEventListener("click", () => {
+//   const tabsContainer = closeTab.closest(".tabs");
+//   tabsContainer.style.display = "none";
+//   tabContents.forEach((content) => (content.style.display = "none"));
+// });
 
-// Activer le premier onglet par défaut
-if (tabButtons.length > 0) {
-  tabButtons[0].click();
-}
+// // Activer le premier onglet par défaut
+// if (tabButtons.length > 0) {
+//   tabButtons[0].click();
+// }
 
-// Close button functionality (optional)
-document.querySelector(".tab-close").addEventListener("click", function () {
-  this.parentElement.style.display = "none"; // Hides the tab bar
-  // You would also want to hide the content here.
-});
+// // Close button functionality (optional)
+// document.querySelector(".tab-close").addEventListener("click", function () {
+//   this.parentElement.style.display = "none"; // Hides the tab bar
+//   // You would also want to hide the content here.
+// });
 
 
 
@@ -177,7 +165,7 @@ initializeLayers(
   config.urls.urlGeoserver,
   config.urls.urlImagesServer,
   "layer-list"
-).then((failedLayers) => {
+).then(({failedLayers}) => {
   if (failedLayers.length === 0) {
     console.log("Toutes les couches GeoJson ont été initialisées !");
   } else {
