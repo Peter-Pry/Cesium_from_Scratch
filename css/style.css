@@ -41,6 +41,35 @@ body,
   filter: opacity(80%);
 }
 
+#zoom-bar {
+  position: absolute;
+  top: calc(50% - 60px);
+  right: 10px;
+  width: 20px;
+  height: 120px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: black;
+  padding: 10px;
+  /* overflow-y: auto; */
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+}
+
+.zoom-bar-button{
+  cursor: pointer;
+  
+  /* display: flex; */
+  /* justify-content: center; */
+}
+
+.zoom-bar-btn-img {
+  max-width: 30px;
+  max-height: 30px;
+  margin: 5px;
+}
+
+
 /* Tooltips with data-title attribut */
 [data-title]:hover:after {
   opacity: 1;

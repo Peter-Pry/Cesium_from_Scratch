@@ -118,24 +118,32 @@ tabButtons.forEach((button) => {
   });
 });
 
-// Gestionnaire pour le bouton de fermeture
-// const closeTab = document.querySelector(".tab-close");
-// closeTab.addEventListener("click", () => {
-//   const tabsContainer = closeTab.closest(".tabs");
-//   tabsContainer.style.display = "none";
-//   tabContents.forEach((content) => (content.style.display = "none"));
-// });
+//Zoom + Boussole
+//Réaligner le nord
+document.getElementById('nord-btn').addEventListener('click', function() {
+  viewer.camera.flyTo({
+      destination: viewer.camera.positionWC, // Utilise la position actuelle de la caméra
+      orientation: {
+          heading: Cesium.Math.toRadians(0), // Orientation vers le nord
+          pitch: viewer.camera.pitch, // Garde le pitch actuel
+          roll: viewer.camera.roll // Garde le roll actuel
+      },
+      duration: 2, // Durée de l'animation en secondes
+      easingFunction: Cesium.EasingFunction.QUADRATIC_OUT // Fonction d'atténuation pour une transition douce
+  });
+});
 
-// // Activer le premier onglet par défaut
-// if (tabButtons.length > 0) {
-//   tabButtons[0].click();
-// }
 
-// // Close button functionality (optional)
-// document.querySelector(".tab-close").addEventListener("click", function () {
-//   this.parentElement.style.display = "none"; // Hides the tab bar
-//   // You would also want to hide the content here.
-// });
+//Zoom Avant
+document.getElementById('zoom-plus-btn').addEventListener('click', function() {
+  viewer.camera.zoomIn(500); // La valeur contrôle la quantité de zoom
+});
+
+//Zoom arrière
+document.getElementById('zoom-moins-btn').addEventListener('click', function() {
+  viewer.camera.zoomOut(500); // La valeur contrôle la quantité de zoom
+});
+
 
 
 
